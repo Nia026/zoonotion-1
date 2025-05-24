@@ -1,0 +1,66 @@
+.ticket-page {
+  background-color: #a2845e;
+  /* Warna background cokelat */
+  padding-bottom: 50px;
+}
+
+.ticket-banner-container {
+  position: relative;
+  width: 100%;
+  height: 65vh;
+  overflow: hidden;
+  margin-bottom: 56px;
+}
+
+.ticket-banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ticket-banner-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  /* Warna teks banner */
+  font-size: 64px;
+  /* Ukuran font banner */
+  font-family: 'Poppins', sans-serif;
+  /* Pastikan font Poppins tersedia atau ganti */
+  font-weight: 600;
+  text-align: center;
+  width: 80%;
+  /* Agar teks tidak terlalu lebar di layar besar */
+}
+
+.section-title {
+  color: white;
+  /* Warna judul bagian */
+  font-size: 36px;
+  /* Ukuran font judul */
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
+
+.zoo-card {
+  background-color: #214b26 !important;
+  /* Warna card hijau tua */
+  border-radius: 10px;
+}
+
+.zoo-card .card-title {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.zoo-card .card-text {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.arrow-icon {
+  margin-left: 8px;
+  font-size: 16px; 
+}

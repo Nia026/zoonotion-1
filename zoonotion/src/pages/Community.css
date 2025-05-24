@@ -1,0 +1,111 @@
+.community-page {
+  background-color: #f8f9fa;
+  padding-bottom: 50px;
+}
+
+.community-banner-container {
+  position: relative;
+  width: 100%;
+  height: 65vh;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.community-banner-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.community-banner-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 64px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  text-align: center;
+  width: 80%;
+}
+
+.community-section {
+  min-height: 400px;
+}
+
+.bg-brown {
+  background-color: #a2845e;
+}
+
+.bg-green-dark {
+  background-color: #214b26;
+}
+
+.bg-green {
+  background-color: #2b9147;
+}
+
+/* Styling untuk tombol Tambah Event dan Tambah Galeri (lebar lebih kecil, tengah) */
+.add-button {
+  background-color: white;
+  color: #214b26;
+  border: 1px solid #214b26;
+  width: fit-content;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 14px;
+  margin-top: 15px;
+  /* Tambahkan margin atas agar tidak terlalu dekat dengan judul */
+}
+
+.add-button:hover {
+  background-color: #f0f8f0;
+  color: #193a1e;
+  border-color: #193a1e;
+}
+
+.section-title-container {
+  background-color: #214b26;
+  position: relative;
+  overflow: hidden;
+  padding: 15px;    
+} 
+
+/* Styling untuk teks judul */
+.section-title {
+  margin-bottom: 0;
+}
+
+/* Styling untuk tombol Edit */
+.edit-button {
+  background-color: white;
+  color: #214b26;
+  border: 1px solid white;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.edit-button:hover {
+  background-color: #f0f8f0;
+  color: #193a1e;
+}
+
+/* Styling untuk tombol Hapus */
+.delete-button {
+  background-color: white;
+  color: #dc3545;
+  border: 1px solid white;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.delete-button:hover {
+  background-color: #ffe3e8;
+  color: #c82333;
+}
