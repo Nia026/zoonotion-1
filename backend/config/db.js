@@ -16,7 +16,7 @@ pool.getConnection((err, connection) => {
     return;
   }
   
-  console.log('Successfully connected to MySQL database: zoonotion (using mysql package)!');
+  console.log(`Successfully connected to MySQL database: ${dbConfig.database}`);
   connection.release(); 
 });
 
