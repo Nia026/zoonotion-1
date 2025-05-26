@@ -10,19 +10,19 @@ router.post('/register', async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-  db.query('SELECT * FROM admins WHERE email = ?', [email], (err, results) => {
+  db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
     if (err) return res.status(500).json({ error: 'Database error' });
     if (results.length > 0) return res.status(400).json({ message: 'Email already registered' });
 
     db.query(
-      'INSERT INTO admins (username, email, password, otp_code) VALUES (?, ?, ?, ?)',
+      'INSERT INTO users (username, email, password, otp_code) VALUES (?, ?, ?, ?)',
       [username, email, hashedPassword, otp],
       async (err) => {
         if (err) return res.status(500).json({ error: 'Failed to register' });
 
         try {
           await transporter.sendMail({
-            from: '"Admin Registration" <niarfebriar@gmail.com>',
+            from: '"User Registration" <niarfebriar@gmail.com>',
             to: email,
             subject: 'Your OTP Code',
             html: `<h3>Your OTP Code: ${otp}</h3>`
@@ -40,14 +40,14 @@ router.post('/verify-otp', (req, res) => {
   const { email, otp_code } = req.body;
 
   db.query(
-    'SELECT * FROM admins WHERE email = ? AND otp_code = ?',
+    'SELECT * FROM users WHERE email = ? AND otp_code = ?',
     [email, otp_code],
     (err, results) => {
       if (err) return res.status(500).json({ error: 'Database error' });
       if (results.length === 0) return res.status(400).json({ message: 'Invalid OTP' });
 
       db.query(
-        'UPDATE admins SET is_verified = 1, otp_code = NULL WHERE email = ?',
+        'UPDATE users SET is_verified = 1, otp_code = NULL WHERE email = ?',
         [email],
         (updateErr) => {
           if (updateErr) return res.status(500).json({ error: 'Verification failed' });
@@ -66,7 +66,7 @@ router.post('/login', (req, res) => {
   }
 
   db.query(
-    'SELECT * FROM admins WHERE username = ? AND email = ?',
+    'SELECT * FROM users WHERE username = ? AND email = ?',
     [username, email],
     (err, results) => {
       if (err) return res.status(500).json({ error: 'Database error' });
@@ -75,26 +75,15 @@ router.post('/login', (req, res) => {
       const user = results[0];
 
       bcrypt.compare(password, user.password, (err, isMatch) => {
-        if (err) {
-          console.error('Bcrypt error:', err.message); 
-          return res.status(500).json({ error: 'Bcrypt error' });
-        }
-      
-        console.log('Password from input:', password);
-        console.log('Hashed password from DB:', user.password);
-      
+        if (err) return res.status(500).json({ error: 'Bcrypt error' });
         if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
         if (!user.is_verified) return res.status(403).json({ message: 'Email not verified' });
-      
+
         res.status(200).json({
           message: 'Login successful',
-          admin: { id: user.id, username: user.username }
+          user: { id: user.id, username: user.username }
         });
       });
-
-    console.log("Request body:", req.body);
-
-     
     }
   );
 });
@@ -103,11 +92,11 @@ router.post('/forgot-password', (req, res) => {
   const { email } = req.body;
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-  db.query('SELECT * FROM admins WHERE email = ?', [email], (err, results) => {
+  db.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
     if (err) return res.status(500).json({ error: 'Database error' });
     if (results.length === 0) return res.status(400).json({ message: 'Email not registered' });
 
-    db.query('UPDATE admins SET otp_code = ? WHERE email = ?', [otp, email], async (updateErr) => {
+    db.query('UPDATE users SET otp_code = ? WHERE email = ?', [otp, email], async (updateErr) => {
       if (updateErr) return res.status(500).json({ error: 'Failed to set OTP' });
 
       try {
@@ -129,7 +118,7 @@ router.post('/verify-reset-otp', (req, res) => {
   const { email, otp_code } = req.body;
 
   db.query(
-    'SELECT * FROM admins WHERE email = ? AND otp_code = ?',
+    'SELECT * FROM users WHERE email = ? AND otp_code = ?',
     [email, otp_code],
     (err, results) => {
       if (err) return res.status(500).json({ error: 'Database error' });
@@ -143,16 +132,12 @@ router.post('/verify-reset-otp', (req, res) => {
 router.post('/reset-password', (req, res) => {
   const { email, otp_code, new_password } = req.body;
 
-  console.log('email:', email);
-  console.log('otp_code:', otp_code);
-  console.log('new_password:', new_password);
-
   if (!email || !otp_code || !new_password) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
   db.query(
-    'SELECT * FROM admins WHERE email = ? AND otp_code = ?',
+    'SELECT * FROM users WHERE email = ? AND otp_code = ?',
     [email, otp_code],
     (err, results) => {
       if (err) return res.status(500).json({ error: 'Database error' });
@@ -164,7 +149,7 @@ router.post('/reset-password', (req, res) => {
           return res.status(500).json({ error: 'Bcrypt hashing error' });
 
         db.query(
-          'UPDATE admins SET password = ?, otp_code = NULL WHERE email = ?',
+          'UPDATE users SET password = ?, otp_code = NULL WHERE email = ?',
           [hashedPassword, email],
           (updateErr) => {
             if (updateErr)
@@ -176,11 +161,6 @@ router.post('/reset-password', (req, res) => {
       });
     }
   );
-
-  console.log('req.body:', req.body);
-
 });
-
-
 
 module.exports = router; 
