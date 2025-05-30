@@ -1,10 +1,23 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Navbar, Nav, Container } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Navbar, Nav, Container, Button } from "react-bootstrap";
 
 function NavigationBar() {
   const location = useLocation();
-  
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    setIsLoggedIn(!!userData); // true jika ada user
+  }, [location]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    navigate("/login");
+  };
+
   const baseStyle = {
     color: '#1E1E1E',
     padding: '8px',
@@ -30,8 +43,12 @@ function NavigationBar() {
     { to: "/community", label: "COMMUNITY" },
     { to: "/ticket", label: "ZOO" },
     { to: "/article", label: "ARTICLE" },
-    { to: "/profile", label: "PROFILE" },
   ];
+
+  // Tambahkan PROFILE hanya jika sudah login
+  if (isLoggedIn) {
+    links.push({ to: "/profiles", label: "PROFILE" });
+  }
 
   return (
     <Navbar bg="white" expand="lg" className="shadow">
@@ -46,7 +63,7 @@ function NavigationBar() {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
-          <Nav className="ms-auto">
+          <Nav className="ms-auto align-items-center">
             {links.map((link) => (
               <Nav.Item key={link.to}>
                 <Nav.Link
@@ -70,6 +87,26 @@ function NavigationBar() {
                 </Nav.Link>
               </Nav.Item>
             ))}
+            <Nav.Item className="ms-3">
+              {isLoggedIn ? (
+                <Button
+                  variant="outline-danger"
+                  onClick={handleLogout}
+                  style={{ borderRadius: '8px', padding: '6px 16px' }}
+                >
+                  LOGOUT
+                </Button>
+              ) : (
+                <Button
+                  as={Link}
+                  to="/login"
+                  variant="outline-dark"
+                  style={{ borderRadius: '8px', padding: '6px 16px' }}
+                >
+                  LOGIN
+                </Button>
+              )}
+            </Nav.Item>
           </Nav>
         </Navbar.Collapse>
       </Container>
