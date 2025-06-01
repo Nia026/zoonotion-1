@@ -1,0 +1,97 @@
+.edukasi-page-background {
+  background-image: url('/public/assets/backgroundEdukasi.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.edukasi-content-box {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  padding: 30px 50px;
+  margin-bottom: 30px;
+  border: 2px solid #6c757d;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pin-blue {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #007bff;
+}
+
+.pin-blue.top-left {
+  top: 10px;
+  left: 10px;
+}
+
+.pin-blue.top-right {
+  top: 10px;
+  right: 10px;
+}
+
+.edukasi-title {
+  font-size: 28px;
+  /* Contoh, sesuaikan jika perlu */
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 32px;
+}
+
+.edukasi-subtitle {
+  font-size: 24px;
+  /* Contoh, sesuaikan jika perlu */
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.button-image {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.button-image img {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+}
+
+.footer-text {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* General button styles for consistency, though you use react-bootstrap Button */
+/* Jika Anda ingin override button Bootstrap secara global, bisa di sini */
+.btn-custom-green {
+  background: #33693C;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 28px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(51, 105, 60, 0.08);
+}
+
+.btn-custom-green:hover {
+  background: #2a5530;
+  /* Slightly darker on hover */
+}

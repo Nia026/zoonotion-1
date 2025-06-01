@@ -1,0 +1,259 @@
+/* src/pages/EducationAves.css */
+
+.education-aves-page {
+  background-color: #f8f9fa;
+  /* Latar belakang halaman */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-aves-bg {
+  background-image: url('/public/assets/bannerEdukasi.png');
+  /* Ganti dengan path gambar hutan Anda*/
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  padding: 100px 0;
+  /* Sesuaikan padding agar konten di tengah */
+  display: flex;
+  align-items: center;
+  min-height: 400px;
+  /* Tinggi minimum header */
+}
+
+.header-aves-bg .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  /* Overlay gelap agar teks terbaca */
+}
+
+.header-content {
+  z-index: 1;
+  /* Pastikan konten di atas overlay */
+}
+
+.header-aves-bg h1 {
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.aves-explanation-card {
+  background-color: rgba(255, 255, 255, 0.95);
+  /* Sedikit transparan */
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  max-width: 280px;
+  /* Lebar kartu */
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border: none;
+}
+
+.aves-explanation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.aves-general-img {
+  width: 100px;
+  /* Ukuran gambar di kartu penjelasan Aves */
+  height: 100px;
+  object-fit: contain;
+}
+
+.learn-more-btn {
+  color: #A2845E !important;
+  /* Warna tombol Penjelasan Aves */
+  font-size: 1.1rem;
+}
+
+.learn-more-btn:hover {
+  color: #8c714d !important;
+}
+
+/* Animal Grid Section */
+.animal-grid-section {
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.animal-card {
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+  height: 100%;
+  /* Memastikan tinggi kartu sama */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  border: none;
+}
+
+.animal-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.animal-img {
+  width: 120px;
+  /* Ukuran gambar hewan di kartu */
+  height: 120px;
+  border-radius: 50%;
+  /* Membuat gambar lingkaran */
+  object-fit: cover;
+  border: 3px solid #A2845E;
+  /* Border di gambar hewan */
+  padding: 5px;
+}
+
+.animal-name {
+  color: #333;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+/* Modal Styling for Aves Explanation */
+.aves-modal-header {
+  background-image: url('/public/assets/backgroundDetailEdukasi.png');
+  /* Gambar background modal Aves*/
+  background-size: cover;
+  background-position: center;
+  color: white;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  position: relative;
+  padding-bottom: 30px;
+  /* Memberi ruang di bawah judul */
+}
+
+.aves-modal-header .modal-title {
+  color: white;
+  font-weight: bold;
+}
+
+.aves-modal-header .btn-close {
+  filter: invert(1);
+  /* Membuat ikon close putih */
+  z-index: 1;
+}
+
+.aves-modal-body {
+  background-color: #e6f7ff;
+  /* Warna latar belakang body modal Aves */
+  padding: 30px;
+  text-align: justify;
+}
+
+.aves-modal-img {
+  max-width: 180px;
+  /* Ukuran gambar di modal Aves */
+  height: auto;
+  border-radius: 10px;
+  border: 2px solid #A2845E;
+}
+
+.aves-explanation-text {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+.aves-modal-body ul {
+  list-style-type: disc;
+  padding-left: 25px;
+  margin-top: 15px;
+}
+
+.aves-modal-body ul li {
+  margin-bottom: 8px;
+  color: #444;
+}
+
+/* Modal Styling for Animal Detail */
+.animal-modal-header {
+  background-image: url('/public/assets/backgroundDetailAnimals.png');
+  /* Gambar background modal Ayam*/
+  background-size: cover;
+  background-position: center;
+  color: white;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  position: relative;
+  padding-bottom: 30px;
+  /* Memberi ruang di bawah judul */
+}
+
+.animal-modal-header .modal-title {
+  color: white;
+  font-weight: bold;
+}
+
+.animal-modal-header .btn-close {
+  filter: invert(1);
+  /* Membuat ikon close putih */
+  z-index: 1;
+}
+
+.animal-modal-body {
+  background-color: #fcf9f5;
+  /* Warna latar belakang body modal hewan */
+  padding: 30px;
+  text-align: justify;
+}
+
+.animal-modal-img {
+  max-width: 250px;
+  /* Ukuran gambar di modal hewan */
+  height: auto;
+  border-radius: 10px;
+  border: 3px solid #A2845E;
+}
+
+.animal-description-text {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+.footer-educations {
+  background: #F4F6F8;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .header-aves-bg {
+    padding: 60px 0;
+    min-height: 300px;
+  }
+
+  .header-aves-bg h1 {
+    font-size: 2.5rem;
+  }
+
+  .aves-explanation-card {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+
+  .aves-modal-img,
+  .animal-modal-img {
+    max-width: 150px;
+  }
+
+  .aves-modal-body,
+  .animal-modal-body {
+    padding: 20px;
+    font-size: 0.95rem;
+  }
+}

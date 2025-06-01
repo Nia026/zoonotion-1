@@ -1,36 +1,63 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Container, Form, Button, Table, Spinner, Alert } from 'react-bootstrap';
 
 export default function TambahEvent() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
-  // Form state
+  // Form event state
   const [namaKomunitas, setNamaKomunitas] = useState("");
   const [penyelenggara, setPenyelenggara] = useState("");
   const [tahun, setTahun] = useState("");
   const [deskripsi, setDeskripsi] = useState("");
   const [banner, setBanner] = useState(null);
+  const [bannerPreview, setBannerPreview] = useState(null);
 
-  // Fetch data communities
+  // Form galeri state
+  const [selectedCommunityId, setSelectedCommunityId] = useState("");
+  const [namaGaleri, setNamaGaleri] = useState("");
+  const [galleryFiles, setGalleryFiles] = useState([]);
+
   useEffect(() => {
     fetchEvents();
   }, []);
 
   const fetchEvents = () => {
     setLoading(true);
+    setError(null);
     axios
       .get("http://localhost:5000/api/communities")
       .then((res) => {
         setEvents(res.data);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        console.error("Error fetching events:", err);
+        setError("Gagal memuat daftar event. Pastikan server backend berjalan.");
+        setLoading(false);
+      });
   };
 
-  // Handle submit form
+  const handleBannerChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setBanner(file);
+      setBannerPreview(URL.createObjectURL(file));
+    } else {
+      setBanner(null);
+      setBannerPreview(null);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitSuccess(false);
+    setSubmitError(false);
+
     const formData = new FormData();
     formData.append("nama_komunitas", namaKomunitas);
     formData.append("nama_penyelenggara", penyelenggara);
@@ -47,148 +74,260 @@ export default function TambahEvent() {
       setTahun("");
       setDeskripsi("");
       setBanner(null);
+      setBannerPreview(null);
       fetchEvents();
-      alert("Event berhasil ditambahkan!");
+      setSubmitSuccess(true);
+      setTimeout(() => setSubmitSuccess(false), 3000);
     } catch (err) {
-      alert("Gagal menambah event!");
+      console.error("Error submitting event:", err);
+      setSubmitError(true);
+      setTimeout(() => setSubmitError(false), 3000);
+    }
+  };
+
+  const handleGalleryFilesChange = (e) => {
+    setGalleryFiles(Array.from(e.target.files));
+  };
+
+  const handleGallerySubmit = async (e) => {
+    e.preventDefault();
+
+    if (!selectedCommunityId || galleryFiles.length === 0) {
+      alert("Pastikan memilih event dan upload gambar galeri.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("nama_galeri", namaGaleri);
+    galleryFiles.forEach((file) => {
+      formData.append("gambar_galeri", file);
+    });
+
+    try {
+      await axios.post(
+        `http://localhost:5000/api/communities/${selectedCommunityId}/galleries`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+
+      setNamaGaleri("");
+      setGalleryFiles([]);
+      setSelectedCommunityId("");
+
+      alert("Galeri berhasil ditambahkan!");
+      fetchEvents();
+    } catch (err) {
+      console.error("Error submitting gallery:", err);
+      alert("Gagal menambahkan galeri.");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#e8f5e9] to-[#f4f6f8] p-6 md:p-10">
-      <div className="max-w-2xl md:max-w-3xl mx-auto bg-white shadow-2xl border p-6 md:p-10 rounded-3xl mb-10">
-        <h1 className="text-2xl md:text-3xl font-bold mb-8 text-[#33693C] text-center tracking-wide drop-shadow">
-          <span className="inline-block border-b-4 border-[#b2dfdb] pb-1">
-            Tambah Event Baru
-          </span>
-        </h1>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-6">
-            <label className="block mb-2 text-base font-semibold text-[#33693C]">
-              Nama Event
-            </label>
-            <input
-              type="text"
-              value={namaKomunitas}
-              onChange={(e) => setNamaKomunitas(e.target.value)}
-              className="w-full px-4 py-2 rounded-xl border border-[#b2dfdb] focus:outline-none focus:ring-2 focus:ring-[#33693C] transition shadow-sm"
-              required
-            />
-          </div>
-          <div className="mb-6">
-            <label className="block mb-2 text-base font-semibold text-[#33693C]">
-              Nama Penyelenggara
-            </label>
-            <input
-              type="text"
-              value={penyelenggara}
-              onChange={(e) => setPenyelenggara(e.target.value)}
-              className="w-full px-4 py-2 rounded-xl border border-[#b2dfdb] focus:outline-none focus:ring-2 focus:ring-[#33693C] transition shadow-sm"
-            />
-          </div>
-          <div className="mb-6">
-            <label className="block mb-2 text-base font-semibold text-[#33693C]">
-              Tahun Penyelenggara
-            </label>
-            <input
-              type="number"
-              value={tahun}
-              onChange={(e) => setTahun(e.target.value)}
-              className="w-full px-4 py-2 rounded-xl border border-[#b2dfdb] focus:outline-none focus:ring-2 focus:ring-[#33693C] transition shadow-sm"
-              min="1900"
-              max="2100"
-            />
-          </div>
-          <div className="mb-6">
-            <label className="block mb-2 text-base font-semibold text-[#33693C]">
-              Deskripsi Event
-            </label>
-            <textarea
-              value={deskripsi}
-              onChange={(e) => setDeskripsi(e.target.value)}
-              className="w-full px-4 py-3 border border-[#b2dfdb] rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[#33693C] transition shadow-sm"
-              rows={4}
-              required
-            ></textarea>
-          </div>
-          <div className="mb-6">
-            <label className="block mb-2 text-base font-semibold text-[#33693C]">
-              Banner Event
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setBanner(e.target.files[0])}
-              className="block"
-            />
-          </div>
-          <button
-            type="submit"
-            className="bg-[#33693C] hover:bg-[#24512a] text-white px-10 py-3 rounded-full text-lg mt-4 w-full transition font-semibold shadow-lg"
-          >
-            Simpan Event
-          </button>
-        </form>
-      </div>
+    <div className="bg-light min-vh-100 py-5">
+      <Container className="mb-5">
+        <div className="bg-white shadow p-4 p-md-5 rounded-3 border">
+          <h1 className="text-center mb-4 text-success fw-bold text-shadow">
+            <span className="border-bottom border-success border-4 pb-1">
+              Tambah Event Baru
+            </span>
+          </h1>
 
-      <div className="max-w-4xl mx-auto bg-white shadow-xl border p-6 md:p-10 rounded-3xl">
-        <h2 className="text-xl font-bold mb-6 text-[#33693C]">
-          Daftar Event (Database communities)
-        </h2>
-        {loading ? (
-          <div>Loading...</div>
-        ) : events.length === 0 ? (
-          <div className="text-gray-500">Belum ada event.</div>
-        ) : (
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-[#f4f6f8]">
-                <th className="p-3 border">ID</th>
-                <th className="p-3 border">Nama Event</th>
-                <th className="p-3 border">Penyelenggara</th>
-                <th className="p-3 border">Tahun</th>
-                <th className="p-3 border">Deskripsi</th>
-                <th className="p-3 border">Banner</th>
-              </tr>
-            </thead>
-            <tbody>
-              {events.map((ev) => (
-                <tr key={ev.id}>
-                  <td className="p-2 border">{ev.id}</td>
-                  <td className="p-2 border">{ev.nama_komunitas}</td>
-                  <td className="p-2 border">{ev.nama_penyelenggara || "-"}</td>
-                  <td className="p-2 border">
-                    {ev.tahun_penyelenggara || "-"}
-                  </td>
-                  <td className="p-2 border">
-                    {ev.deskripsi_komunitas || "-"}
-                  </td>
-                  <td className="p-2 border">
-                    {ev.banner_komunitas ? (
-                      <img
-                        src={
-                          ev.banner_komunitas.startsWith("http")
-                            ? ev.banner_komunitas
-                            : `http://localhost:5000${ev.banner_komunitas}`
-                        }
-                        alt="banner"
-                        style={{
-                          width: 80,
-                          height: 40,
-                          objectFit: "cover",
-                          borderRadius: 6,
-                        }}
-                      />
-                    ) : (
-                      "-"
-                    )}
-                  </td>
+          {submitSuccess && (
+            <Alert variant="success" className="mb-3">
+              Event berhasil ditambahkan!
+            </Alert>
+          )}
+          {submitError && (
+            <Alert variant="danger" className="mb-3">
+              Gagal menambah event! Terjadi kesalahan.
+            </Alert>
+          )}
+
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label className="text-success fw-semibold">Nama Event</Form.Label>
+              <Form.Control
+                type="text"
+                value={namaKomunitas}
+                onChange={(e) => setNamaKomunitas(e.target.value)}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="text-success fw-semibold">Nama Penyelenggara</Form.Label>
+              <Form.Control
+                type="text"
+                value={penyelenggara}
+                onChange={(e) => setPenyelenggara(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="text-success fw-semibold">Tahun Penyelenggara</Form.Label>
+              <Form.Control
+                type="number"
+                value={tahun}
+                onChange={(e) => setTahun(e.target.value)}
+                min="1900"
+                max="2100"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label className="text-success fw-semibold">Deskripsi Event</Form.Label>
+              <Form.Control
+                as="textarea"
+                value={deskripsi}
+                onChange={(e) => setDeskripsi(e.target.value)}
+                rows={4}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-4">
+              <Form.Label className="text-success fw-semibold">Banner Event</Form.Label>
+              <Form.Control
+                type="file"
+                accept="image/*"
+                onChange={handleBannerChange}
+              />
+              {bannerPreview && (
+                <div className="mt-3 text-center">
+                  <img
+                    src={bannerPreview}
+                    alt="Banner Preview"
+                    className="img-thumbnail"
+                    style={{ maxWidth: '200px', maxHeight: '100px', objectFit: 'cover' }}
+                  />
+                </div>
+              )}
+            </Form.Group>
+            <Button
+              type="submit"
+              variant="success"
+              className="w-100 py-2 fw-semibold"
+            >
+              Simpan Event
+            </Button>
+          </Form>
+
+          {/* Tambah Galeri Form */}
+          <Form onSubmit={handleGallerySubmit} className="mt-5">
+            <h2 className="text-center mb-4 text-success fw-bold">
+              Tambah Galeri ke Event
+            </h2>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="text-success fw-semibold">Pilih Event</Form.Label>
+              <Form.Select
+                value={selectedCommunityId}
+                onChange={(e) => setSelectedCommunityId(e.target.value)}
+                required
+              >
+                <option value="">-- Pilih Event --</option>
+                {events.map((ev) => (
+                  <option key={ev.id} value={ev.id}>
+                    {ev.nama_komunitas}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="text-success fw-semibold">Nama Galeri</Form.Label>
+              <Form.Control
+                type="text"
+                value={namaGaleri}
+                onChange={(e) => setNamaGaleri(e.target.value)}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-4">
+              <Form.Label className="text-success fw-semibold">
+                Upload Gambar Galeri (bisa pilih banyak)
+              </Form.Label>
+              <Form.Control
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleGalleryFilesChange}
+                required
+              />
+            </Form.Group>
+
+            <Button
+              type="submit"
+              variant="primary"
+              className="w-100 py-2 fw-semibold"
+            >
+              Simpan Galeri
+            </Button>
+          </Form>
+        </div>
+      </Container>
+
+      <Container>
+        <div className="bg-white shadow p-4 p-md-5 rounded-3 border">
+          <h2 className="text-center mb-4 text-success fw-bold">
+            Daftar Event (Database communities)
+          </h2>
+          {loading ? (
+            <div className="text-center">
+              <Spinner animation="border" variant="success" />
+              <p>Memuat daftar event...</p>
+            </div>
+          ) : error ? (
+            <Alert variant="danger" className="text-center">
+              {error}
+            </Alert>
+          ) : events.length === 0 ? (
+            <div className="text-center text-muted">Belum ada event.</div>
+          ) : (
+            <Table striped bordered hover responsive className="text-center">
+              <thead>
+                <tr className="bg-light">
+                  <th>ID</th>
+                  <th>Nama Event</th>
+                  <th>Penyelenggara</th>
+                  <th>Tahun</th>
+                  <th>Deskripsi</th>
+                  <th>Banner</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+              </thead>
+              <tbody>
+                {events.map((ev) => (
+                  <tr key={ev.id}>
+                    <td>{ev.id}</td>
+                    <td>{ev.nama_komunitas}</td>
+                    <td>{ev.nama_penyelenggara || "-"}</td>
+                    <td>{ev.tahun_penyelenggara || "-"}</td>
+                    <td>{ev.deskripsi_komunitas || "-"}</td>
+                    <td>
+                      {ev.banner_komunitas ? (
+                        <img
+                          src={
+                            ev.banner_komunitas.startsWith("http")
+                              ? ev.banner_komunitas
+                              : `http://localhost:5000${ev.banner_komunitas}`
+                          }
+                          alt="banner"
+                          className="img-thumbnail"
+                          style={{
+                            width: 80,
+                            height: 40,
+                            objectFit: "cover",
+                            borderRadius: 6,
+                          }}
+                        />
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
+        </div>
+      </Container>
     </div>
   );
 }

@@ -1,113 +1,98 @@
-import React, {useState, useEffect} from "react"; 
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
-import './Tiket.css';
-import { FiArrowRight } from 'react-icons/fi';
+import React, { useEffect, useState } from 'react';
+import { Container, Row, Col, Button, Card, Image } from 'react-bootstrap';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Jika Anda ingin menggunakan navigate untuk tombol
 
-function Tiket(){
-  const [zooList, setZooList] = useState([]);
+// Impor file CSS
+import './Tiket.css';
+
+// Base URL untuk API dan gambar
+const API_BASE_URL = "http://localhost:5000";
+
+function Zoo() {
+  const [zoos, setZoos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const navigate = useNavigate(); // Jika Anda ingin menggunakan navigate
 
   useEffect(() => {
-    const defaultZooList = [
-      // {
-      //   id: 1,
-      //   name: 'Kebun Binatang Surabaya',
-      //   description: 'Kebun Binatang Surabaya (KBS) atau Surabaya Zoo adalah salah satu kebun binatang yang populer di Indonesia...',
-      //   websiteUrl: 'https://www.surabayazoo.web.id/',
-      //   ticketUrl: 'https://tiket.surabayazoo.web.id/',
-      // },
-      // {
-      //   id: 2,
-      //   name: 'Taman Safari Indonesia',
-      //   description: 'Taman Safari Indonesia adalah taman hiburan satwa yang terletak di Cisarua, Prigen, dan Bali...',
-      //   websiteUrl: 'https://tamansafari.com/',
-      //   ticketUrl: 'https://tamansafari.com/tiket/',
-      // },
-      // {
-      //   id: 3,
-      //   name: 'Bandung Zoo',
-      //   description: 'Kebun Binatang Bandung merupakan salah satu objek wisata alam flora dan fauna di Kota Bandung...',
-      //   websiteUrl: 'https://bandungzoo.id/',
-      //   ticketUrl: 'https://bandungzoo.id/beli-tiket/',
-      // },
-      // {
-      //   id: 4,
-      //   name: 'Gembira Loka Zoo',
-      //   description: 'Kebun Raya dan Kebun Binatang Gembira Loka (Gembira Loka Zoo) adalah kebun binatang yang berada di Kota Yogyakarta...',
-      //   websiteUrl: 'https://gembiralokazoo.com/',
-      //   ticketUrl: 'https://gembiralokazoo.com/tiket/',
-      // },
-      // {
-      //   id: 5,
-      //   name: 'Batu Secret Zoo',
-      //   description: 'Batu Secret Zoo merupakan tempat wisata dan kebun binatang modern yang terletak di Kota Batu, Jawa Timur...',
-      //   websiteUrl: 'https://jatimpark.com/batu-secret-zoo/',
-      //   ticketUrl: 'https://jatimpark.com/batu-secret-zoo/#tiket',
-      // },
-      // {
-      //   id: 6,
-      //   name: 'Ragunan Zoo',
-      //   description: 'Taman Margasatwa Ragunan atau juga disebut Kebun Binatang Ragunan adalah sebuah kebun binatang yang terletak di daerah Ragunan, Pasar Minggu, Jakarta Selatan...',
-      //   websiteUrl: 'https://ragunanzoo.jakarta.go.id/',
-      //   ticketUrl: 'https://ragunanzoo.jakarta.go.id/informasi-tiket/',
-      // },
-    ];
-    setZooList(defaultZooList);
+    fetchZoos();
   }, []);
 
-  return (
-    <div className="ticket-page">
-      <div className="ticket-banner-container">
-        <img src="/assets/bannerKupu.png"alt="Halaman Tiket" className="ticket-banner-image" />
-        <h2 className="ticket-banner-text">Halaman Tiket</h2>
-      </div>
+  const fetchZoos = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/zoos`);
+      setZoos(response.data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching zoos:", err);
+      setError("Gagal memuat data kebun binatang. Pastikan server backend berjalan.");
+      setLoading(false);
+    }
+  };
 
+  return (
+    <div className="zoo-page-background">
       <Container className="py-5">
-        <h2 className="text-center mb-4 section-title">Informasi Kebun Binatang</h2>
-        <Row className="justify-content-center">
-          {zooList.length > 0 ? (
-            zooList.map((zoo) => (
-              <Col md={6} lg={4} className="mb-4" key={zoo.id}>
-                <Card className="zoo-card bg-green-dark text-white shadow">
-                  <Card.Body className="d-flex flex-column align-items-center">
-                    <Card.Title className="text-center mb-3">{zoo.name}</Card.Title> {/* Tampilkan nama */}
-                    <Card.Text className="text-center mb-3">{zoo.description}</Card.Text> {/* Tampilkan deskripsi */}
-                    <div className="d-grid gap-2">
-                      <Button
-                        variant="outline-light"
-                        size="sm"
-                        as="a"
-                        href={zoo.websiteUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="custom-button website-button"
-                      >
-                        Website Resmi <FiArrowRight className="arrow-icon" /> 
-                      </Button>
-                      <Button
-                        variant="warning"
-                        size="sm"
-                        as="a"
-                        href={zoo.ticketUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="custom-button ticket-button"
-                      >
-                        Beli Tiket <FiArrowRight className="arrow-icon" /> 
-                      </Button>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))
-          ) : (
-            <Col md={12}>
-              <p className="text-center">Kebun binatang belum tersedia.</p>
-            </Col>
-          )}
-        </Row>
+        <h1 className="text-center mb-4" style={{ color: '#222', fontWeight: 'bold' }}>
+          Informasi Kebun Binatang
+        </h1>
+
+        {loading ? (
+          <div className="text-center text-success py-5">Loading informasi kebun binatang...</div>
+        ) : error ? (
+          <div className="text-center text-danger py-5">{error}</div>
+        ) : zoos.length === 0 ? (
+          <div className="text-center text-muted py-5">Belum ada informasi kebun binatang yang tersedia.</div>
+        ) : (
+          <div className="zoo-grid-container">
+            {zoos.map((zoo) => (
+              <Card key={zoo.id} className="zoo-card">
+                <div className="zoo-card-img-col">
+                  <Card.Img
+                    src={`${API_BASE_URL}${zoo.gambar_zoo}`}
+                    alt={zoo.nama_kebun_binatang}
+                    className="zoo-card-img"
+                  />
+                </div>
+                <div className="zoo-card-body-col">
+                  <div> {/* Wrapper for title and description */}
+                    <Card.Title className="zoo-card-title">{zoo.nama_kebun_binatang}</Card.Title>
+                    <Card.Text className="zoo-card-description">
+                      {zoo.deskripsi_kebun_binatang ? zoo.deskripsi_kebun_binatang.substring(0, 200) + '...' : '-'}
+                    </Card.Text>
+                  </div>
+                  <div className="zoo-card-buttons">
+                    <Button
+                      as="a" /* Render as an anchor tag */
+                      href={zoo.link_web_resmi}
+                      target="_blank" /* Open in new tab */
+                      rel="noopener noreferrer"
+                      className="btn-zoo-action"
+                    >
+                      Website Resmi
+                    </Button>
+                    <Button
+                      as="a"
+                      href={zoo.link_tiket}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-zoo-action secondary" /* Menambahkan kelas secondary untuk warna berbeda */
+                    >
+                      Pembelian Tiket
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
       </Container>
     </div>
   );
 }
 
-export default Tiket 
+export default Zoo;

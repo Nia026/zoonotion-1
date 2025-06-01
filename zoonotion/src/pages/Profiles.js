@@ -1,212 +1,340 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect, useRef } from 'react';
+import { Container, Row, Col, Card, Button, Form, Spinner, Alert } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import { FaCamera } from 'react-icons/fa'; // Untuk ikon kamera di foto profil
 
-export default function Profiles() {
-  const [profiles, setProfiles] = useState([]);
-  const [loading, setLoading] = useState(true);
+import './Profiles.css'; // Pastikan Anda memiliki file CSS ini
+import axios from 'axios';
 
-  // State untuk upload foto profil
-  const [selectedId, setSelectedId] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [uploadMsg, setUploadMsg] = useState("");
+const API_BASE_URL = "http://localhost:5000"; // Sesuaikan jika API Anda di domain/port berbeda
 
-  // State untuk tambah/edit
-  const [form, setForm] = useState({
-    user_id: "",
-    username: "",
-    email: "",
-    tanggal_lahir: "",
-    alamat: "",
-    noted: "",
+function Profile() {
+  const navigate = useNavigate();
+  const [userProfile, setUserProfile] = useState(null); // Menyimpan data profil yang dimuat
+  const [isEditing, setIsEditing] = useState(false);   // Mode edit profil
+  const [formData, setFormData] = useState({           // Data yang akan di-edit/dikirim
+    username: '',
+    email: '',
+    foto_profil: null, // Bisa berupa string URL atau objek File (saat diupload)
+    tanggal_lahir: '',
+    alamat: '',
+    noted: ''
   });
-  const [editId, setEditId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [message, setMessage] = useState(null);
+  const fileInputRef = useRef(null); // Ref untuk input file tersembunyi
 
   useEffect(() => {
-    fetchProfiles();
-  }, []);
+    fetchProfile();
+  }, []); // Hanya dijalankan sekali saat komponen di-mount
 
-  const fetchProfiles = () => {
+  const getUserDataFromLocalStorage = () => {
+    const userDataString = localStorage.getItem("user");
+    if (userDataString) {
+      try {
+        const user = JSON.parse(userDataString);
+        if (user && user.id) {
+          return { userId: user.id, username: user.username, email: user.email };
+        }
+      } catch (e) {
+        console.error("Error parsing user data from localStorage:", e);
+        localStorage.removeItem("user"); // Hapus data yang rusak
+        navigate('/login');
+        return null;
+      }
+    }
+    return null;
+  };
+
+  const fetchProfile = async () => {
     setLoading(true);
-    axios.get("http://localhost:5000/api/user_profiles")
-      .then(res => {
-        setProfiles(res.data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  };
+    setError(null);
+    setMessage(null);
 
-  // Upload foto profil
-  const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]);
-  };
+    const userData = getUserDataFromLocalStorage();
 
-  const handleUpload = async (id) => {
-    if (!selectedFile) {
-      setUploadMsg("Pilih file terlebih dahulu.");
+    if (!userData || !userData.userId) {
+      setError("Anda harus login untuk melihat halaman profil.");
+      setLoading(false);
+      navigate('/login');
       return;
     }
-    const formData = new FormData();
-    formData.append("foto_profil", selectedFile);
+
     try {
-      await axios.post(`http://localhost:5000/api/user_profiles/${id}/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" }
+      // Mengambil data profil dari backend
+      const response = await axios.get(`${API_BASE_URL}/api/profile/${userData.userId}`);
+      const data = response.data;
+
+      // Set userProfile untuk tampilan
+      setUserProfile(data);
+
+      // Inisialisasi formData dengan data dari backend
+      // Username dan email diambil dari userData (localStorage) karena backend tidak mengizinkan update via profile endpoint
+      setFormData({
+        username: userData.username || '', // Selalu ambil dari localStorage untuk konsistensi
+        email: userData.email || '',       // Selalu ambil dari localStorage untuk konsistensi
+        foto_profil: data.foto_profil || null,
+        tanggal_lahir: data.tanggal_lahir || '', // Jika null, akan jadi string kosong
+        alamat: data.alamat || '',
+        noted: data.noted || ''
       });
-      setUploadMsg("Upload berhasil!");
-      setSelectedFile(null);
-      setSelectedId(null);
-      fetchProfiles();
-    } catch {
-      setUploadMsg("Upload gagal.");
-    }
-  };
-
-  // Tambah/Edit user profile
-  const handleFormChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (editId) {
-        await axios.put(`http://localhost:5000/api/user_profiles/${editId}`, form);
-        setUploadMsg("Data berhasil diupdate!");
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching profile:", err);
+      if (err.response && err.response.status === 404) {
+        // Jika profil di database belum ada (404), inisialisasi dengan data dari localStorage user
+        setError("Profil pengguna belum dibuat. Silakan lengkapi data Anda.");
+        setFormData(prev => ({
+          ...prev,
+          username: userData.username || '',
+          email: userData.email || ''
+        }));
+        setUserProfile({ // Set userProfile juga agar tampilan tidak loading terus
+          user_id: userData.userId,
+          username: userData.username,
+          email: userData.email,
+          foto_profil: null, // Default placeholder
+          tanggal_lahir: null,
+          alamat: null,
+          noted: null,
+        });
       } else {
-        await axios.post("http://localhost:5000/api/user_profiles", form);
-        setUploadMsg("Data berhasil ditambah!");
+        setError("Gagal memuat profil. Silakan coba lagi nanti.");
       }
-      setForm({ user_id: "", username: "", email: "", tanggal_lahir: "", alamat: "", noted: "" });
-      setEditId(null);
-      fetchProfiles();
-    } catch {
-      setUploadMsg("Gagal simpan data.");
+      setLoading(false);
     }
   };
 
-  // Hapus user profile
-  const handleDelete = async (id) => {
-    if (!window.confirm("Yakin hapus data ini?")) return;
-    try {
-      await axios.delete(`http://localhost:5000/api/user_profiles/${id}`);
-      setUploadMsg("Data berhasil dihapus!");
-      fetchProfiles();
-    } catch {
-      setUploadMsg("Gagal hapus data.");
-    }
+  const handleEditClick = () => {
+    setIsEditing(true);
   };
 
-  // Isi form edit
-  const handleEdit = (profile) => {
-    setForm({
-      user_id: profile.user_id,
-      username: profile.username || "",
-      email: profile.email || "",
-      tanggal_lahir: profile.tanggal_lahir ? profile.tanggal_lahir.substring(0, 10) : "",
-      alamat: profile.alamat || "",
-      noted: profile.noted || "",
+  const handleCancelClick = () => {
+    setIsEditing(false);
+    setError(null);
+    setMessage(null);
+    // Reset form data ke userProfile terakhir yang dimuat
+    setFormData({
+      username: userProfile.username || '',
+      email: userProfile.email || '',
+      foto_profil: userProfile.foto_profil || null, // Kembali ke foto profil yang sudah ada (path)
+      tanggal_lahir: userProfile.tanggal_lahir || '',
+      alamat: userProfile.alamat || '',
+      noted: userProfile.noted || ''
     });
-    setEditId(profile.id);
   };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    // Simpan objek File, bukan hanya nama atau path
+    if (e.target.files && e.target.files[0]) {
+      setFormData(prev => ({ ...prev, foto_profil: e.target.files[0] }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setMessage(null);
+    const userData = getUserDataFromLocalStorage();
+
+    if (!userData || !userData.userId) {
+      setError("User ID tidak ditemukan. Silakan login kembali.");
+      setLoading(false);
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const data = new FormData();
+      data.append('tanggal_lahir', formData.tanggal_lahir);
+      data.append('alamat', formData.alamat);
+      data.append('noted', formData.noted);
+
+      // Hanya append file jika ada file baru yang dipilih
+      if (formData.foto_profil instanceof File) {
+        data.append('foto_profil', formData.foto_profil);
+      }
+      // Jika ingin menghapus foto profil, Anda bisa mengirimkan field foto_profil dengan string kosong
+      // data.append('foto_profil', ''); // Ini akan mengosongkan path di backend
+
+      await axios.put(`${API_BASE_URL}/api/profile/${userData.userId}`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setMessage("Profil berhasil diperbarui!");
+      setIsEditing(false);
+      fetchProfile(); // Refresh data setelah update untuk menampilkan data terbaru
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      setError("Gagal memperbarui profil. Silakan coba lagi nanti.");
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
+
+  if (loading) {
+    return (
+      <div className="profile-page-container d-flex align-items-center justify-content-center" style={{ minHeight: '80vh' }}>
+        <Spinner animation="border" variant="success" />
+        <p className="ms-3 text-success">Memuat profil...</p>
+      </div>
+    );
+  }
+
+  // Tentukan URL foto profil yang akan ditampilkan
+  let displayedFotoProfil = `${process.env.PUBLIC_URL}/placeholder-profile.png`; // Default placeholder
+  if (isEditing && formData.foto_profil instanceof File) {
+    displayedFotoProfil = URL.createObjectURL(formData.foto_profil); // Preview file baru
+  } else if (userProfile && userProfile.foto_profil) {
+    displayedFotoProfil = `${API_BASE_URL}${userProfile.foto_profil}`; // URL dari backend
+  }
 
   return (
-    <div style={{ maxWidth: 900, margin: "40px auto", background: "#fff", borderRadius: 12, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", padding: 32 }}>
-      <h1 style={{ fontSize: 28, fontWeight: 700, color: "#222", marginBottom: 32 }}>Daftar User Profile</h1>
-      {uploadMsg && (
-        <div style={{ marginBottom: 16, color: uploadMsg.includes("berhasil") ? "#33693C" : "#c00" }}>{uploadMsg}</div>
-      )}
+    <div className="profile-page-container">
+      <Container className="py-5">
+        <h1 className="profile-header text-center mb-5">Profile Pengguna</h1>
 
-      {/* Form tambah/edit */}
-      <form onSubmit={handleFormSubmit} style={{ marginBottom: 32, background: "#f4f6f8", padding: 20, borderRadius: 8 }}>
-        <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-          <input type="number" name="user_id" placeholder="User ID" value={form.user_id} onChange={handleFormChange} required style={{ flex: 1, padding: 8 }} />
-          <input type="text" name="username" placeholder="Username" value={form.username} onChange={handleFormChange} style={{ flex: 1, padding: 8 }} />
-          <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleFormChange} style={{ flex: 1, padding: 8 }} />
-          <input type="date" name="tanggal_lahir" placeholder="Tanggal Lahir" value={form.tanggal_lahir} onChange={handleFormChange} style={{ flex: 1, padding: 8 }} />
-          <input type="text" name="alamat" placeholder="Alamat" value={form.alamat} onChange={handleFormChange} style={{ flex: 1, padding: 8 }} />
-          <input type="text" name="noted" placeholder="Noted" value={form.noted} onChange={handleFormChange} style={{ flex: 1, padding: 8 }} />
-        </div>
-        <button type="submit" style={{ marginTop: 16, background: "#33693C", color: "#fff", border: "none", borderRadius: 6, padding: "8px 24px", fontWeight: 600 }}>
-          {editId ? "Update" : "Tambah"}
-        </button>
-        {editId && (
-          <button type="button" onClick={() => { setEditId(null); setForm({ user_id: "", username: "", email: "", tanggal_lahir: "", alamat: "", noted: "" }); }} style={{ marginLeft: 12, background: "#ccc", color: "#222", border: "none", borderRadius: 6, padding: "8px 24px", fontWeight: 600 }}>
-            Batal
-          </button>
-        )}
-      </form>
+        {message && <Alert variant="success" className="mb-4">{message}</Alert>}
+        {error && <Alert variant="danger" className="mb-4">{error}</Alert>}
 
-      {loading ? (
-        <div>Loading...</div>
-      ) : profiles.length === 0 ? (
-        <div style={{ color: "#888", fontSize: 18 }}>Belum ada data user profile.</div>
-      ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ background: "#f4f6f8" }}>
-              <th style={{ padding: 10, border: "1px solid #eee" }}>ID</th>
-              <th style={{ padding: 10, border: "1px solid #eee" }}>User ID</th>
-              <th style={{ padding: 10, border: "1px solid #eee" }}>Username</th>
-              <th style={{ padding: 10, border: "1px solid #eee" }}>Email</th>
-              <th style={{ padding: 10, border: "1px solid #eee" }}>Tanggal Lahir</th>
-              <th style={{ padding: 10, border: "1px solid #eee" }}>Alamat</th>
-              <th style={{ padding: 10, border: "1px solid #eee" }}>Foto Profil</th>
-              <th style={{ padding: 10, border: "1px solid #eee" }}>Upload Foto</th>
-              <th style={{ padding: 10, border: "1px solid #eee" }}>Noted</th>
-              <th style={{ padding: 10, border: "1px solid #eee" }}>Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {profiles.map(profile => (
-              <tr key={profile.id}>
-                <td style={{ padding: 10, border: "1px solid #eee" }}>{profile.id}</td>
-                <td style={{ padding: 10, border: "1px solid #eee" }}>{profile.user_id}</td>
-                <td style={{ padding: 10, border: "1px solid #eee" }}>{profile.username || "-"}</td>
-                <td style={{ padding: 10, border: "1px solid #eee" }}>{profile.email || "-"}</td>
-                <td style={{ padding: 10, border: "1px solid #eee" }}>{profile.tanggal_lahir ? profile.tanggal_lahir.substring(0, 10) : "-"}</td>
-                <td style={{ padding: 10, border: "1px solid #eee" }}>{profile.alamat || "-"}</td>
-                <td style={{ padding: 10, border: "1px solid #eee" }}>
-                  {profile.foto_profil ? (
-                    profile.foto_profil.startsWith("http")
-                      ? <img src={profile.foto_profil} alt="foto profil" style={{ width: 48, height: 48, borderRadius: "50%", objectFit: "cover" }} />
-                      : <img src={`http://localhost:5000${profile.foto_profil}`} alt="foto profil" style={{ width: 48, height: 48, borderRadius: "50%", objectFit: "cover" }} />
-                  ) : "-"}
-                </td>
-                <td style={{ padding: 10, border: "1px solid #eee" }}>
-                  {selectedId === profile.id ? (
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <input type="file" accept="image/*" onChange={handleFileChange} />
-                      <button
-                        onClick={() => handleUpload(profile.id)}
-                        style={{ padding: "4px 12px", borderRadius: 6, background: "#33693C", color: "#fff", border: "none", cursor: "pointer" }}
-                      >
-                        Upload
-                      </button>
-                      <button
-                        onClick={() => { setSelectedId(null); setSelectedFile(null); }}
-                        style={{ padding: "4px 12px", borderRadius: 6, background: "#ccc", color: "#222", border: "none", cursor: "pointer" }}
-                      >
-                        Batal
-                      </button>
+        <Row className="justify-content-center">
+          <Col md={10} lg={9}>
+            <Card className="profile-card">
+              <Row className="align-items-center">
+                <Col md={4} className="text-center mb-4 mb-md-0">
+                  <div className="profile-avatar-container">
+                    <img
+                      src={displayedFotoProfil}
+                      alt="Profil Pengguna"
+                      className="profile-avatar"
+                    />
+                    {isEditing && (
+                      <>
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          style={{ display: 'none' }}
+                          onChange={handleFileChange}
+                          accept="image/*"
+                        />
+                        <div className="profile-avatar-upload-icon" onClick={() => fileInputRef.current.click()}>
+                          <FaCamera />
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </Col>
+                <Col md={8}>
+                  <Form onSubmit={handleSubmit}>
+                    <Row>
+                      <Col xs={12}>
+                        <div className="profile-info-box mb-4">
+                          <Form.Group className="mb-3">
+                            <Form.Label className="profile-info-label">Nama</Form.Label>
+                            {/* Nama tidak bisa di-edit dari sini, selalu ambil dari localStorage */}
+                            <div className="profile-info-value">{formData.username || 'N/A'}</div>
+                          </Form.Group>
+
+                          <Form.Group className="mb-3">
+                            <Form.Label className="profile-info-label">Email</Form.Label>
+                            {/* Email tidak bisa di-edit dari sini, selalu ambil dari localStorage */}
+                            <div className="profile-info-value">{formData.email || 'N/A'}</div>
+                          </Form.Group>
+
+                          <Form.Group className="mb-0">
+                            <Form.Label className="profile-info-label">Tanggal Lahir</Form.Label>
+                            {isEditing ? (
+                              <Form.Control
+                                type="date"
+                                name="tanggal_lahir"
+                                value={formData.tanggal_lahir}
+                                onChange={handleChange}
+                                className="profile-input"
+                              />
+                            ) : (
+                              <div className="profile-info-value">{userProfile?.tanggal_lahir || 'Belum diisi'}</div>
+                            )}
+                          </Form.Group>
+                        </div>
+                      </Col>
+                      <Col xs={12} className="mb-4">
+                        <div className="profile-info-box">
+                          <Form.Group className="mb-0">
+                            <Form.Label className="profile-info-label">Alamat</Form.Label>
+                            {isEditing ? (
+                              <Form.Control
+                                as="textarea"
+                                name="alamat"
+                                value={formData.alamat}
+                                onChange={handleChange}
+                                className="profile-input profile-textarea"
+                                placeholder="Masukkan alamat lengkap Anda"
+                                rows={3} // Menambah baris agar lebih jelas
+                              />
+                            ) : (
+                              <div className="profile-info-value">{userProfile?.alamat || 'Belum diisi'}</div>
+                            )}
+                          </Form.Group>
+                        </div>
+                      </Col>
+                      <Col xs={12}>
+                        <div className="profile-noted-box">
+                          <Form.Group className="mb-0">
+                            <Form.Label className="profile-info-label">Noted</Form.Label>
+                            {isEditing ? (
+                              <Form.Control
+                                as="textarea"
+                                name="noted"
+                                value={formData.noted}
+                                onChange={handleChange}
+                                className="profile-input profile-textarea"
+                                placeholder="Tulis catatan atau minat Anda"
+                                rows={3} // Menambah baris agar lebih jelas
+                              />
+                            ) : (
+                              <div className="profile-info-value">{userProfile?.noted || 'Belum ada catatan'}</div>
+                            )}
+                          </Form.Group>
+                        </div>
+                      </Col>
+                    </Row>
+                    <div className="d-flex justify-content-end mt-4">
+                      {isEditing ? (
+                        <>
+                          <Button variant="danger" onClick={handleCancelClick} className="btn-cancel-profile me-2">
+                            Batal
+                          </Button>
+                          <Button variant="success" type="submit" className="btn-save-profile">
+                            Save
+                          </Button>
+                        </>
+                      ) : (
+                        <Button variant="primary" onClick={handleEditClick} className="btn-edit-profile">
+                          Edit Profil
+                        </Button>
+                      )}
                     </div>
-                  ) : (
-                    <button
-                      onClick={() => setSelectedId(profile.id)}
-                      style={{ padding: "4px 12px", borderRadius: 6, background: "#007bff", color: "#fff", border: "none", cursor: "pointer" }}
-                    >
-                      Ganti Foto
-                    </button>
-                  )}
-                </td>
-                <td style={{ padding: 10, border: "1px solid #eee" }}>{profile.noted || "-"}</td>
-                <td style={{ padding: 10, border: "1px solid #eee" }}>
-                  <button onClick={() => handleEdit(profile)} style={{ marginRight: 8, background: "#ffc107", color: "#222", border: "none", borderRadius: 6, padding: "4px 12px", cursor: "pointer" }}>Edit</button>
-                  <button onClick={() => handleDelete(profile.id)} style={{ background: "#c00", color: "#fff", border: "none", borderRadius: 6, padding: "4px 12px", cursor: "pointer" }}>Hapus</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+                  </Form>
+                </Col>
+              </Row>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 }
+
+export default Profile;

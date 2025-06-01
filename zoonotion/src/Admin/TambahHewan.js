@@ -32,7 +32,6 @@ export default function TambahHewan() {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "#F4F6F8" }}>
-      <Sidebar />
       <main style={{ flex: 1, padding: "40px 5vw" }}>
         <h1 style={{ fontSize: 28, fontWeight: 700, color: "#222", marginBottom: 32 }}>
           Tambah Hewan

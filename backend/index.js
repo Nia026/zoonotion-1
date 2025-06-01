@@ -15,6 +15,10 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  next();
+}); 
 
 // Konfigurasi folder penyimpanan file upload
 const upload = multer({
@@ -70,11 +74,16 @@ app.post('/api/users/register', async (req, res) => {
         password: hashed,
         otp_code,
         is_verified: false,
+        role: "user",
       },
     });
+    console.log("User created:", user);
+    const newUser = await prisma.users.findUnique({ where: { id: user.id } });
+    console.log("New user fetched:", newUser);
     await sendOtpEmail(email, otp_code);
     res.json({ message: "Registrasi berhasil. Silakan cek email untuk OTP." });
   } catch (err) {
+    console.error("Error during registration:", err);
     res.status(400).json({ message: err.message });
   }
 });
@@ -122,15 +131,27 @@ app.get('/api/users', async (req, res) => {
 // Verifikasi OTP
 app.post("/api/users/verify-otp", async (req, res) => {
   const { email, otp_code } = req.body;
-  const user = await prisma.users.findUnique({ where: { email } });
-  if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
-  if (user.otp_code !== otp_code) return res.status(400).json({ message: "OTP salah" });
+  try {
+    const user = await prisma.users.findUnique({ where: { email } });
+    console.log("User before verification:", user); // Tambahkan logging
+    if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
+    if (user.otp_code !== otp_code) return res.status(400).json({ message: "OTP salah" });
 
-  await prisma.users.update({
-    where: { email },
-    data: { is_verified: true, otp_code: null },
-  });
-  res.json({ message: "Verifikasi berhasil, silakan login." });
+    await prisma.users.update({
+      where: { email },
+      data: { is_verified: true, otp_code: null },
+    });
+
+    const updatedUser = await prisma.users.findUnique({ where: { email } });
+    console.log("User after verification:", updatedUser); // Tambahkan logging
+
+    const { password: _, ...userData } = updatedUser;
+    console.log("User data sent:", userData); // Tambahkan logging
+    res.json({ message: "Verifikasi berhasil, silakan login.", user: userData });
+  } catch (err) {
+    console.error("Error during OTP verification:", err); // Tambahkan logging error
+    res.status(500).json({ message: err.message });
+  }
 });
 
 // === ARTICLES ===
@@ -143,17 +164,59 @@ app.get('/api/articles', async (req, res) => {
   }
 });
 
-app.post('/api/articles', async (req, res) => {
+app.get('/api/articles/:id', async (req, res) => {
   try {
-    const { judul_artikel, isi_artikel, nama_author, gambar_artikel } = req.body;
+    const articleId = parseInt(req.params.id); // Prisma membutuhkan ID sebagai integer
+
+    // Mencari artikel berdasarkan ID
+    const article = await prisma.articles.findUnique({
+      where: {
+        id: articleId,
+      },
+      // Anda bisa memilih kolom yang ingin diambil jika tidak semua dibutuhkan
+      select: {
+        id: true,
+        judul_artikel: true,
+        gambar_artikel: true,
+        isi_artikel: true,
+        nama_author: true,
+        publish_date: true,
+        created_at: true,
+      },
+    });
+
+    if (!article) {
+      // Jika artikel tidak ditemukan
+      return res.status(404).json({ message: 'Article not found' });
+    }
+
+    // Mengirimkan data artikel yang ditemukan
+    res.json(article);
+  } catch (err) {
+    console.error('Error fetching article by ID:', err);
+    res.status(500).json({ message: 'Error fetching article', error: err.message });
+  }
+});
+
+app.post('/api/articles', upload.single('gambar_artikel'),async (req, res) => {
+  try {
+    const { judul_artikel, isi_artikel, nama_author } = req.body;
+    let gambar_artikel_path = null;
+    if (req.file) {
+      gambar_artikel_path = `/uploads/${req.file.filename}`; // Menyimpan path relatif
+    }
     const artikel = await prisma.articles.create({
-      data: { judul_artikel, isi_artikel, nama_author, gambar_artikel }
+      data: { judul_artikel, 
+              isi_artikel, 
+              nama_author, 
+              gambar_artikel: gambar_artikel_path,
+            }
     });
     res.json(artikel);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-});
+}); 
 
 // === ADMINS ===
 app.get('/api/admins', async (req, res) => {
@@ -199,6 +262,38 @@ app.post('/api/communities', upload.single("banner_komunitas"), async (req, res)
   }
 });
 
+app.post('/api/communities/:id/galleries', upload.array("gambar_galeri", 10), async (req, res) => {
+  try {
+    console.log("Params:", req.params);
+    console.log("Body:", req.body);
+    console.log("Files:", req.files);
+
+    const { id } = req.params;
+    const { deskripsi_gambar } = req.body;
+    const files = req.files;
+
+    if (!files || files.length === 0) {
+      return res.status(400).json({ message: "Tidak ada file yang diunggah." });
+    }
+
+    const galleriesData = files.map(file => ({
+      community_id: Number(id),
+      gambar_galeri: `/uploads/${file.filename}`,
+      deskripsi_gambar: deskripsi_gambar || null,
+    }));
+
+    const galleries = await prisma.galleries.createMany({
+      data: galleriesData,
+    });
+
+    res.json({ message: "Galeri berhasil ditambahkan.", galleries });
+  } catch (err) {
+    console.error("Error in POST /api/communities/:id/galleries:", err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
 // === EDUCATIONS ===
 app.get('/api/educations', async (req, res) => {
   try {
@@ -237,6 +332,21 @@ app.get('/api/galleries', async (req, res) => {
   }
 });
 
+app.post('/api/galleries', upload.array('images'), async (req, res) => {
+  try {
+    const { community_id, title } = req.body;
+    const imagePaths = req.files.map(file => `/uploads/${file.filename}`);
+    const galleryEntries = await Promise.all(
+      imagePaths.map(image =>
+        prisma.galleries.create({ data: { community_id: Number(community_id), title, image } })
+      )
+    );
+    res.json(galleryEntries);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // === ZOOS ===
 app.get('/api/zoos', async (req, res) => {
   try {
@@ -247,22 +357,38 @@ app.get('/api/zoos', async (req, res) => {
   }
 });
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ message: 'Endpoint tidak ditemukan' });
-});
+app.post('/api/zoos', upload.single('gambar_zoo'), async (req, res) => {
+  const { nama_kebun_binatang, deskripsi_kebun_binatang, link_web_resmi, link_tiket } = req.body;
+  let gambar_zoo_path = null;
 
-// Error handler
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Internal server error' });
+  if (req.file) {
+      // Path relatif dari root server backend Anda
+      gambar_zoo_path = `/uploads/${req.file.filename}`;
+  }
+  // Validasi input
+  if (!nama_kebun_binatang) {
+      return res.status(400).json({ message: 'Nama kebun binatang wajib diisi.' });
+  }
+  try {
+      const newZoo = await prisma.zoos.create({
+          data: {
+              nama_kebun_binatang,
+              deskripsi_kebun_binatang,
+              link_web_resmi,
+              link_tiket,
+              gambar_zoo: gambar_zoo_path, // Simpan path file di database
+          },
+      });
+      res.status(201).json({ message: 'Kebun binatang berhasil ditambahkan!', zoo: newZoo });
+  } catch (error) {
+      console.error('Error adding new zoo:', error);
+      // Tangani error jika nama kebun binatang sudah ada (unique constraint)
+      if (error.code === 'P2002' && error.meta?.target?.includes('nama_kebun_binatang')) {
+          return res.status(409).json({ message: 'Nama kebun binatang sudah ada.' });
+      }
+      res.status(500).json({ message: 'Terjadi kesalahan saat menambahkan kebun binatang.', error: error.message });
+  }
 });
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
-
-// --- CRUD user_profiles ---
 
 // GET semua user_profiles
 app.get("/api/user_profiles", async (req, res) => {
@@ -274,45 +400,129 @@ app.get("/api/user_profiles", async (req, res) => {
   }
 });
 
-// POST tambah user_profile
-app.post("/api/user_profiles", async (req, res) => {
+app.get('/api/profile/:userId', async (req, res) => {
+  const userId = parseInt(req.params.userId);
+
   try {
-    const { user_id, username, email, tanggal_lahir, alamat, noted } = req.body;
-    const profile = await prisma.user_profiles.create({
-      data: {
-        user_id: Number(user_id),
-        username,
-        email,
-        tanggal_lahir: tanggal_lahir ? new Date(tanggal_lahir) : null,
-        alamat,
-        noted,
-      },
+    // Ambil data dasar user dari tabel users (email dan username)
+    const user = await prisma.users.findUnique({
+      where: { id: userId },
+      select: { id: true, username: true, email: true }
     });
-    res.json(profile);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Coba ambil user_profile
+    const userProfile = await prisma.user_profiles.findFirst({
+      where: { user_id: userId },
+    });
+
+    // Jika user_profile belum ada, kembalikan data dari tabel users dengan field lain kosong
+    if (!userProfile) {
+      return res.json({
+        user_id: user.id,
+        username: user.username, 
+        email: user.email,     
+        foto_profil: null,
+        tanggal_lahir: null,
+        alamat: null,
+        noted: null
+      });
+    }
+
+    // Jika user_profile ada, gabungkan dengan data username/email dari tabel users
+    const formattedProfile = {
+      user_id: user.id,
+      username: user.username,
+      email: user.email,
+      foto_profil: userProfile.foto_profil || null,
+      tanggal_lahir: userProfile.tanggal_lahir ? userProfile.tanggal_lahir.toISOString().split('T')[0] : null,
+      alamat: userProfile.alamat || null,
+      noted: userProfile.noted || null,
+    };
+
+    res.json(formattedProfile);
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
 // PUT update user_profile
-app.put("/api/user_profiles/:id", async (req, res) => {
+app.put('/api/profile/:userId', upload.single('foto_profil'), async (req, res) => {
+  const userId = parseInt(req.params.userId);
+
+  if (isNaN(userId)) {
+      return res.status(400).json({ message: "Invalid user ID provided." });
+  }
+
   try {
-    const { id } = req.params;
-    const { user_id, username, email, tanggal_lahir, alamat, noted } = req.body;
-    const profile = await prisma.user_profiles.update({
-      where: { id: Number(id) },
-      data: {
-        user_id: Number(user_id),
-        username,
-        email,
-        tanggal_lahir: tanggal_lahir ? new Date(tanggal_lahir) : null,
-        alamat,
-        noted,
-      },
+    const { tanggal_lahir, alamat, noted } = req.body;
+    let foto_profil_path = null;
+
+    if (req.file) {
+      foto_profil_path = `/uploads/${req.file.filename}`;
+    }
+
+    // Ambil data dasar user dari tabel users untuk username dan email
+    const userBaseData = await prisma.users.findUnique({
+        where: { id: userId },
+        select: { username: true, email: true }
     });
-    res.json(profile);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+
+    if (!userBaseData) {
+        return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Periksa apakah profil untuk user_id ini sudah ada
+    // Menggunakan findFirst untuk memeriksa keberadaan profil
+    const existingUserProfile = await prisma.user_profiles.findFirst({
+        where: { user_id: userId }
+    });
+
+    let updatedProfile;
+    if (existingUserProfile) {
+        // Jika profil sudah ada, lakukan update
+        updatedProfile = await prisma.user_profiles.update({
+            where: { id: existingUserProfile.id }, // Update berdasarkan ID internal user_profiles
+            data: {
+                tanggal_lahir: tanggal_lahir ? new Date(tanggal_lahir) : null, // Gunakan null untuk menghapus
+                alamat: alamat,
+                noted: noted,
+                foto_profil: foto_profil_path !== null ? foto_profil_path : undefined, // Biarkan undefined jika tidak ada upload baru
+            },
+        });
+    } else {
+        // Jika profil belum ada, buat baru (create)
+        updatedProfile = await prisma.user_profiles.create({
+            data: {
+                user_id: userId,
+                username: userBaseData.username, // Ambil dari data users
+                email: userBaseData.email,     // Ambil dari data users
+                tanggal_lahir: tanggal_lahir ? new Date(tanggal_lahir) : null,
+                alamat: alamat,
+                noted: noted,
+                foto_profil: foto_profil_path,
+            },
+        });
+    }
+
+    const formattedResponse = {
+      user_id: updatedProfile.user_id,
+      username: userBaseData.username, // Pastikan selalu dari tabel users
+      email: userBaseData.email,     // Pastikan selalu dari tabel users
+      foto_profil: updatedProfile.foto_profil,
+      tanggal_lahir: updatedProfile.tanggal_lahir ? updatedProfile.tanggal_lahir.toISOString().split('T')[0] : null,
+      alamat: updatedProfile.alamat,
+      noted: updatedProfile.noted,
+    };
+
+    res.json({ message: 'Profile updated successfully', profile: formattedResponse });
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    res.status(500).json({ message: 'Internal server error', error: error.message });
   }
 });
 
@@ -343,4 +553,20 @@ app.post("/api/user_profiles/:id/upload", upload.single("foto_profil"), async (r
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+});
+
+// 404 handler
+app.use((req, res) => {
+  console.warn(`404 Not Found: ${req.method} ${req.originalUrl}`);
+  res.status(404).json({ message: `Endpoint tidak ditemukan: ${req.method} ${req.originalUrl}` });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Internal server error' });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });

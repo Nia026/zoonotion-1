@@ -33,9 +33,6 @@ const DashboardAdmin = () => {
 
   return (
     <div className="dashboard-admin" style={{ display: "flex", minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <Sidebar />
-
       {/* Main Content */}
       <div style={{ flex: 1, padding: "32px" }}>
         <h1>DASHBOARD</h1>
@@ -89,10 +86,6 @@ const DashboardAdmin = () => {
               ))}
             </tbody>
           </table>
-        </div>
-
-        <div className="footer" style={{ marginTop: "32px" }}>
-          <p>Made with 🍀 by Unotopia Team</p>
         </div>
       </div>
     </div>

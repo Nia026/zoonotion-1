@@ -1,0 +1,167 @@
+.profile-page-container {
+  background-color: #f8f9fa;
+  /* Warna latar belakang halaman */
+  min-height: calc(100vh - 70px);
+  /* Sesuaikan dengan tinggi navbar */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* Untuk mendorong footer ke bawah */
+}
+
+.profile-header {
+  color: #343a40;
+  /* Warna teks judul */
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+}
+
+.profile-card {
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+  background-color: #fff;
+  border: none;
+}
+
+.profile-avatar-container {
+  position: relative;
+  width: 180px;
+  /* Ukuran avatar */
+  height: 180px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 20px auto;
+  border: 4px solid #A2845E;
+  /* Warna border avatar */
+  background-color: #f0f0f0;
+  /* Background fallback */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profile-avatar-upload-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: #A2845E;
+  /* Warna ikon kamera */
+  color: white;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.profile-info-box,
+.profile-noted-box {
+  background-color: #f8f9fa;
+  /* Latar belakang untuk kotak info */
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  /* Jarak antar kotak info */
+  border: 1px solid #e0e0e0;
+}
+
+.profile-info-label {
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 5px;
+  display: block;
+  /* Memastikan label di baris baru */
+}
+
+.profile-info-value {
+  font-size: 1.1rem;
+  color: #333;
+  padding: 8px 0;
+  border-bottom: 1px dashed #e9ecef;
+  /* Garis putus-putus */
+  word-wrap: break-word;
+  /* Memastikan teks panjang tidak keluar kotak */
+}
+
+.profile-info-value:last-child {
+  border-bottom: none;
+  /* Hapus border di elemen terakhir dalam box */
+}
+
+.profile-input {
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  padding: 10px 15px;
+  font-size: 1rem;
+  color: #495057;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.profile-input:focus {
+  border-color: #A2845E;
+  box-shadow: 0 0 0 0.2rem rgba(162, 132, 94, 0.25);
+}
+
+.profile-textarea {
+  min-height: 80px;
+  /* Tinggi minimum untuk textarea */
+  resize: vertical;
+  /* Hanya izinkan resize vertikal */
+}
+
+.btn-edit-profile,
+.btn-save-profile,
+.btn-cancel-profile {
+  border-radius: 8px;
+  padding: 10px 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-edit-profile {
+  background-color: #A2845E;
+  /* Warna tombol edit */
+  border-color: #A2845E;
+}
+
+.btn-edit-profile:hover {
+  background-color: #8c714d;
+  border-color: #8c714d;
+}
+
+.btn-save-profile {
+  background-color: #28a745;
+  /* Warna tombol save (hijau) */
+  border-color: #28a745;
+}
+
+.btn-save-profile:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.btn-cancel-profile {
+  background-color: #dc3545;
+  /* Warna tombol cancel (merah) */
+  border-color: #dc3545;
+}
+
+.btn-cancel-profile:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.footer-text {
+  /* Sudah diatur inline di komponen, tapi bisa ditambahkan di sini jika mau */
+}

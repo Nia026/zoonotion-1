@@ -1,0 +1,179 @@
+.authContainer {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  /* Tengah horizontal */
+  align-items: center;
+  /* Tengah vertikal */
+  background-image: url('/public/assets/loginGambar.png');
+  /* Ganti dengan gambar login */
+  background-size: cover;
+  background-position: center;
+}
+
+.registerContainer {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('/public/assets/registerGambar.png');
+  /* Ganti dengan gambar register */
+  background-size: cover;
+  background-position: center;
+}
+
+.authCard {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  /* width: 400px; */
+  max-width: 95%;
+}
+
+.authCard h3 {
+  color: #343a40;
+  /* Warna teks heading */
+  margin-bottom: 25px;
+}
+
+.formGroup label {
+  color: #495057;
+  /* Warna label form */
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.formControl {
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+.formControl:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+.authButton {
+  background-color: #28a745;
+  /* Warna tombol login/register */
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 12px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.authButton:hover {
+  background-color: #218838;
+}
+
+.authLinkContainer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.authLink {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.authLink:hover {
+  text-decoration: underline;
+}
+
+.adminLink {
+  color: #6c757d;
+  /* Warna link admin */
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin-top: 10px;
+  display: block;
+}
+
+.adminLink:hover {
+  text-decoration: underline;
+  color: #000;
+}
+
+/* Style untuk Modal OTP */
+.otpModalBody {
+  text-align: center;
+  padding: 20px;
+}
+
+.otpModalBody img {
+  max-width: 100px;
+  margin-bottom: 15px;
+}
+
+.otpModalBody p {
+  margin-bottom: 10px;
+  color: #495057;
+}
+
+.otpInputContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.otpInput {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  margin: 0 5px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.otpInput:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+.verifyButton {
+  background-color: #007bff;
+  /* Warna tombol verifikasi */
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.verifyButton:hover {
+  background-color: #0056b3;
+}
+
+/* Style untuk Modal Sukses Verifikasi */
+.successModalBody {
+  text-align: center;
+  padding: 20px;
+}
+
+.successModalBody img {
+  max-width: 100px;
+  margin-bottom: 15px;
+}
+
+.successModalBody h4 {
+  color: #28a745;
+  margin-bottom: 10px;
+}
+
+.successModalBody p {
+  color: #495057;
+}

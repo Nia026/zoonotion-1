@@ -15,7 +15,6 @@ export default function KelolaHewan() {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "#F4F6F8" }}>
-      <Sidebar />
       <main style={{ flex: 1, padding: "40px 5vw" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
           <h1 style={{ fontSize: 28, fontWeight: 700, color: "#222" }}>Kelola Hewan</h1>

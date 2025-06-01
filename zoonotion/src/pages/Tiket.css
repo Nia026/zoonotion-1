@@ -1,66 +1,163 @@
-.ticket-page {
-  background-color: #a2845e;
-  /* Warna background cokelat */
+/* Zoo.css */
+
+.zoo-page-background {
+  background: #F4F6F8;
+  /* Warna background abu-abu muda */
+  min-height: 100vh;
+  padding-top: 100px;
+  /* Ruang untuk navbar */
   padding-bottom: 50px;
+  /* Ruang untuk footer */
 }
 
-.ticket-banner-container {
-  position: relative;
+.zoo-header-banner {
   width: 100%;
-  height: 65vh;
-  overflow: hidden;
-  margin-bottom: 56px;
-}
-
-.ticket-banner-image {
-  width: 100%;
-  height: 100%;
+  height: 250px;
+  /* Tinggi banner sesuai desain */
   object-fit: cover;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
 }
 
-.ticket-banner-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  /* Warna teks banner */
-  font-size: 64px;
-  /* Ukuran font banner */
-  font-family: 'Poppins', sans-serif;
-  /* Pastikan font Poppins tersedia atau ganti */
-  font-weight: 600;
-  text-align: center;
-  width: 80%;
-  /* Agar teks tidak terlalu lebar di layar besar */
-}
-
-.section-title {
-  color: white;
-  /* Warna judul bagian */
-  font-size: 36px;
-  /* Ukuran font judul */
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
+.zoo-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  /* Responsif, 2 kolom pada layar lebar */
+  gap: 30px;
+  /* Jarak antar card */
+  justify-content: center;
+  margin-top: 40px;
 }
 
 .zoo-card {
-  background-color: #214b26 !important;
-  /* Warna card hijau tua */
-  border-radius: 10px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  display: flex;
+  /* Menggunakan flexbox untuk layout di dalam card */
+  height: 100%;
+  /* Pastikan card memiliki tinggi yang sama */
+  border: 1px solid #e0e0e0;
 }
 
-.zoo-card .card-title {
-  font-size: 24px;
-  font-weight: 500;
+.zoo-card-img-col {
+  flex: 0 0 40%;
+  /* Mengambil 40% lebar untuk gambar */
+  max-width: 40%;
 }
 
-.zoo-card .card-text {
-  font-size: 12px;
-  font-weight: 500;
+.zoo-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  /* Border radius di kiri bawah juga */
 }
 
-.arrow-icon {
-  margin-left: 8px;
-  font-size: 16px; 
+.zoo-card-body-col {
+  flex: 0 0 60%;
+  /* Mengambil 60% lebar untuk konten */
+  max-width: 60%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* Menata konten secara vertikal */
+}
+
+.zoo-card-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.zoo-card-description {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 15px;
+  line-height: 1.5;
+  flex-grow: 1;
+  /* Deskripsi bisa memanjang */
+}
+
+.zoo-card-buttons {
+  display: flex;
+  flex-direction: column;
+  /* Tombol bertumpuk */
+  gap: 10px;
+  /* Jarak antar tombol */
+  margin-top: auto;
+  /* Push buttons to the bottom */
+}
+
+.btn-zoo-action {
+  background: #33693C;
+  /* Warna hijau khas Anda */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  text-align: center;
+}
+
+.btn-zoo-action:hover {
+  background: #2a5530;
+  /* Sedikit lebih gelap saat hover */
+}
+
+.btn-zoo-action.secondary {
+  background: #f0ad4e;
+  /* Warna kuning untuk tiket */
+  color: #fff;
+}
+
+.btn-zoo-action.secondary:hover {
+  background: #ec971f;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .zoo-card {
+    flex-direction: column;
+    /* Stack image and content on small screens */
+  }
+
+  .zoo-card-img-col,
+  .zoo-card-body-col {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .zoo-card-img {
+    border-radius: 12px 12px 0 0;
+    /* Adjust border radius for stacked layout */
+    height: 200px;
+    /* Fixed height for image on small screens */
+  }
+
+  .zoo-card-body-col {
+    padding-top: 15px;
+    /* Adjust padding */
+  }
+
+  .zoo-card-buttons {
+    flex-direction: row;
+    /* Tombol berdampingan pada mobile jika cukup */
+    justify-content: center;
+  }
+}
+
+/* Footer style from previous components */
+.footer-text {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin: 0;
 }
