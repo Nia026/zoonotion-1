@@ -157,12 +157,9 @@ function Profile() {
       data.append('alamat', formData.alamat);
       data.append('noted', formData.noted);
 
-      // Hanya append file jika ada file baru yang dipilih
       if (formData.foto_profil instanceof File) {
         data.append('foto_profil', formData.foto_profil);
       }
-      // Jika ingin menghapus foto profil, Anda bisa mengirimkan field foto_profil dengan string kosong
-      // data.append('foto_profil', ''); // Ini akan mengosongkan path di backend
 
       await axios.put(`${API_BASE_URL}/api/profile/${userData.userId}`, data, {
         headers: {
@@ -203,23 +200,18 @@ function Profile() {
 
   return (
     <div className="profile-page-container">
-      <Container className="py-5">
-        <h1 className="profile-header text-center mb-5">Profile Pengguna</h1>
-
-        {message && <Alert variant="success" className="mb-4">{message}</Alert>}
-        {error && <Alert variant="danger" className="mb-4">{error}</Alert>}
-
+      <Container>
         <Row className="justify-content-center">
-          <Col md={10} lg={9}>
-            <Card className="profile-card">
-              <Row className="align-items-center">
-                <Col md={4} className="text-center mb-4 mb-md-0">
-                  <div className="profile-avatar-container">
-                    <img
-                      src={displayedFotoProfil}
-                      alt="Profil Pengguna"
-                      className="profile-avatar"
-                    />
+          <Col md={10} lg={8}>
+            <Card className="profile-card-custom">
+              <h1 className="text-center mb-5 zoo-main-title">
+                Profile Pengguna 
+              </h1>
+              <Row>
+                {/* Kiri: Foto profil, nama, email */}
+                <Col md={4} className="text-center">
+                  <div className="profile-avatar-wrapper mx-auto mb-3">
+                    <img src={displayedFotoProfil} alt="Foto Profil" className="profile-avatar" />
                     {isEditing && (
                       <>
                         <input
@@ -229,101 +221,74 @@ function Profile() {
                           onChange={handleFileChange}
                           accept="image/*"
                         />
-                        <div className="profile-avatar-upload-icon" onClick={() => fileInputRef.current.click()}>
+                        <div className="profile-camera-icon" onClick={() => fileInputRef.current.click()}>
                           <FaCamera />
                         </div>
                       </>
                     )}
                   </div>
+                  <h5 className="profile-name mt-3">{formData.username}</h5>
+                  <p className="profile-email">{formData.email}</p>
                 </Col>
+
+                {/* Kanan: Form edit */}
                 <Col md={8}>
-                  <Form onSubmit={handleSubmit}>
-                    <Row>
-                      <Col xs={12}>
-                        <div className="profile-info-box mb-4">
-                          <Form.Group className="mb-3">
-                            <Form.Label className="profile-info-label">Nama</Form.Label>
-                            {/* Nama tidak bisa di-edit dari sini, selalu ambil dari localStorage */}
-                            <div className="profile-info-value">{formData.username || 'N/A'}</div>
-                          </Form.Group>
+                  <Form onSubmit={handleSubmit} className="profile-form-custom">
+                    <Form.Group>
+                      <Form.Label>Tanggal Lahir</Form.Label>
+                      {isEditing ? (
+                        <Form.Control
+                          type="date"
+                          name="tanggal_lahir"
+                          value={formData.tanggal_lahir}
+                          onChange={handleChange}
+                        />
+                      ) : (
+                        <div className="profile-static-text">{userProfile?.tanggal_lahir || 'Belum diisi'}</div>
+                      )}
+                    </Form.Group>
 
-                          <Form.Group className="mb-3">
-                            <Form.Label className="profile-info-label">Email</Form.Label>
-                            {/* Email tidak bisa di-edit dari sini, selalu ambil dari localStorage */}
-                            <div className="profile-info-value">{formData.email || 'N/A'}</div>
-                          </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Alamat</Form.Label>
+                      {isEditing ? (
+                        <Form.Control
+                          as="textarea"
+                          name="alamat"
+                          value={formData.alamat}
+                          onChange={handleChange}
+                          rows={3}
+                        />
+                      ) : (
+                        <div className="profile-static-text">{userProfile?.alamat || 'Belum diisi'}</div>
+                      )}
+                    </Form.Group>
 
-                          <Form.Group className="mb-0">
-                            <Form.Label className="profile-info-label">Tanggal Lahir</Form.Label>
-                            {isEditing ? (
-                              <Form.Control
-                                type="date"
-                                name="tanggal_lahir"
-                                value={formData.tanggal_lahir}
-                                onChange={handleChange}
-                                className="profile-input"
-                              />
-                            ) : (
-                              <div className="profile-info-value">{userProfile?.tanggal_lahir || 'Belum diisi'}</div>
-                            )}
-                          </Form.Group>
-                        </div>
-                      </Col>
-                      <Col xs={12} className="mb-4">
-                        <div className="profile-info-box">
-                          <Form.Group className="mb-0">
-                            <Form.Label className="profile-info-label">Alamat</Form.Label>
-                            {isEditing ? (
-                              <Form.Control
-                                as="textarea"
-                                name="alamat"
-                                value={formData.alamat}
-                                onChange={handleChange}
-                                className="profile-input profile-textarea"
-                                placeholder="Masukkan alamat lengkap Anda"
-                                rows={3} // Menambah baris agar lebih jelas
-                              />
-                            ) : (
-                              <div className="profile-info-value">{userProfile?.alamat || 'Belum diisi'}</div>
-                            )}
-                          </Form.Group>
-                        </div>
-                      </Col>
-                      <Col xs={12}>
-                        <div className="profile-noted-box">
-                          <Form.Group className="mb-0">
-                            <Form.Label className="profile-info-label">Noted</Form.Label>
-                            {isEditing ? (
-                              <Form.Control
-                                as="textarea"
-                                name="noted"
-                                value={formData.noted}
-                                onChange={handleChange}
-                                className="profile-input profile-textarea"
-                                placeholder="Tulis catatan atau minat Anda"
-                                rows={3} // Menambah baris agar lebih jelas
-                              />
-                            ) : (
-                              <div className="profile-info-value">{userProfile?.noted || 'Belum ada catatan'}</div>
-                            )}
-                          </Form.Group>
-                        </div>
-                      </Col>
-                    </Row>
-                    <div className="d-flex justify-content-end mt-4">
+                    <Form.Group>
+                      <Form.Label>Noted</Form.Label>
+                      {isEditing ? (
+                        <Form.Control
+                          as="textarea"
+                          name="noted"
+                          value={formData.noted}
+                          onChange={handleChange}
+                          rows={3}
+                        />
+                      ) : (
+                        <div className="profile-static-text">{userProfile?.noted || 'Belum ada catatan'}</div>
+                      )}
+                    </Form.Group>
+
+                    {message && <Alert variant="success">{message}</Alert>}
+                    {error && <Alert variant="danger">{error}</Alert>}
+
+                    <div className="d-flex justify-content-center gap-2 mt-4">
                       {isEditing ? (
                         <>
-                          <Button variant="danger" onClick={handleCancelClick} className="btn-cancel-profile me-2">
-                            Batal
-                          </Button>
-                          <Button variant="success" type="submit" className="btn-save-profile">
-                            Save
-                          </Button>
+                          <Button variant="danger" onClick={handleCancelClick}>Batal</Button>
+                          <Button variant="success" type="submit">Simpan</Button>
                         </>
                       ) : (
-                        <Button variant="primary" onClick={handleEditClick} className="btn-edit-profile">
-                          Edit Profil
-                        </Button>
+                        <Button variant="warning" onClick={handleEditClick}>Edit Profil</Button>
                       )}
                     </div>
                   </Form>

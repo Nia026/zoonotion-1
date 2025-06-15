@@ -1,163 +1,364 @@
-/* Zoo.css */
+/* src/pages/Tiket.css */
 
 .zoo-page-background {
-  background: #F4F6F8;
-  /* Warna background abu-abu muda */
+  background-color: #F4F6F8;
+  /* Warna background yang terang */
   min-height: 100vh;
-  padding-top: 100px;
-  /* Ruang untuk navbar */
-  padding-bottom: 50px;
-  /* Ruang untuk footer */
+  padding-top: 120px;
+  /* Ruang untuk navbar, disesuaikan */
+  padding-bottom: 80px;
+  /* Ruang untuk footer, disesuaikan */
 }
 
-.zoo-header-banner {
-  width: 100%;
-  height: 250px;
-  /* Tinggi banner sesuai desain */
-  object-fit: cover;
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-bottom: 40px;
+.zoo-main-title {
+  color: #2c3e50;
+  /* Warna teks yang lebih gelap dan solid */
+  font-weight: 800;
+  /* Lebih tebal */
+  font-size: 2.8rem;
+  /* Ukuran font lebih besar */
+  margin-bottom: 3rem !important;
+  /* Pastikan margin bawah cukup */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.08);
+  /* Sedikit bayangan teks */
 }
 
 .zoo-grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-  /* Responsif, 2 kolom pada layar lebar */
+  /* Auto-fit untuk jumlah kolom responsif */
+  /* minmax(320px, 1fr) untuk fleksibilitas ukuran card di mobile */
+  /* Di desktop, akan mencoba 2 kolom atau lebih tergantung lebar */
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 30px;
   /* Jarak antar card */
   justify-content: center;
-  margin-top: 40px;
+  /* Pusatkan grid item */
+  padding: 0 15px;
+  /* Padding horizontal untuk grid agar tidak mepet */
 }
 
 .zoo-card {
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border-radius: 15px;
+  /* Border radius yang lebih besar */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  /* Bayangan yang lebih menonjol */
   overflow: hidden;
+  /* Penting untuk gambar dan border-radius */
   display: flex;
-  /* Menggunakan flexbox untuk layout di dalam card */
-  height: 100%;
-  /* Pastikan card memiliki tinggi yang sama */
-  border: 1px solid #e0e0e0;
+  /* Untuk layout gambar dan body */
+  flex-direction: column;
+  /* Default: gambar di atas body */
+  height: auto;
+  /* Tinggi card fleksibel */
+  border: none;
+  /* Hilangkan border bawaan */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-.zoo-card-img-col {
-  flex: 0 0 40%;
-  /* Mengambil 40% lebar untuk gambar */
-  max-width: 40%;
+.zoo-card:hover {
+  transform: translateY(-5px);
+  /* Efek melayang saat hover */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.zoo-card-img-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 60%;
+  /* Rasio aspek 16:9 untuk gambar */
+  overflow: hidden;
 }
 
 .zoo-card-img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
-  /* Border radius di kiri bawah juga */
+  /* Pastikan gambar memenuhi area */
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
 }
 
-.zoo-card-body-col {
-  flex: 0 0 60%;
-  /* Mengambil 60% lebar untuk konten */
-  max-width: 60%;
-  padding: 20px;
+.zoo-img-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  /* Overlay semi-transparan hitam */
+  color: #fff;
+  padding: 10px 15px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: left;
+  /* Teks di overlay rata kiri */
+  z-index: 1;
+  /* Pastikan di atas gambar */
+  /* Border radius bawah jika overlay menempel pada border card */
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.zoo-overlay-text {
+  white-space: nowrap;
+  /* Mencegah teks overlay pindah baris */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Tambahkan elipsis jika teks terlalu panjang */
+}
+
+
+.zoo-card-body {
+  padding: 25px;
+  /* Padding body lebih konsisten */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  /* Menata konten secara vertikal */
+  flex-grow: 1;
+  /* Memungkinkan body untuk mengambil sisa ruang */
 }
 
 .zoo-card-title {
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 1.6rem;
+  /* Ukuran judul lebih besar */
+  font-weight: 700;
   margin-bottom: 10px;
   color: #333;
+  line-height: 1.3;
 }
 
 .zoo-card-description {
-  font-size: 14px;
+  font-size: 0.95rem;
+  /* Ukuran deskripsi sedikit lebih besar */
   color: #555;
-  margin-bottom: 15px;
-  line-height: 1.5;
+  margin-bottom: 20px;
+  /* Jarak dengan tombol */
+  line-height: 1.6;
   flex-grow: 1;
   /* Deskripsi bisa memanjang */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Tambahkan elipsis jika deskripsi terlalu panjang */
+  display: -webkit-box;
+  /* Untuk membatasi baris */
+  -webkit-line-clamp: 4;
+  /* Batasi hingga 4 baris */
+  -webkit-box-orient: vertical;
 }
 
 .zoo-card-buttons {
   display: flex;
   flex-direction: column;
-  /* Tombol bertumpuk */
-  gap: 10px;
-  /* Jarak antar tombol */
-  margin-top: auto;
-  /* Push buttons to the bottom */
+  /* Tombol bertumpuk secara default */
+  gap: 12px;
+  /* Jarak antar tombol lebih besar */
+  width: 100%;
+  /* Tombol mengambil lebar penuh */
 }
 
 .btn-zoo-action {
+  border: none;
+  border-radius: 10px;
+  /* Border radius yang lebih besar untuk tombol */
+  padding: 12px 20px;
+  /* Padding tombol lebih besar */
+  font-weight: 700;
+  /* Font lebih tebal */
+  font-size: 1rem;
+  /* Ukuran font tombol lebih besar */
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Bayangan tombol */
+}
+
+.btn-zoo-action.btn-green {
   background: #33693C;
   /* Warna hijau khas Anda */
   color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 15px;
-  font-weight: 600;
-  font-size: 15px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  text-align: center;
 }
 
-.btn-zoo-action:hover {
+.btn-zoo-action.btn-green:hover {
   background: #2a5530;
   /* Sedikit lebih gelap saat hover */
+  transform: translateY(-2px);
+  /* Efek angkat */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-.btn-zoo-action.secondary {
-  background: #f0ad4e;
-  /* Warna kuning untuk tiket */
-  color: #fff;
+.btn-zoo-action.btn-orange {
+  background: #FFC107;
+  /* Warna kuning Bootstrap */
+  color: #333;
+  /* Teks hitam agar kontras dengan kuning */
 }
 
-.btn-zoo-action.secondary:hover {
-  background: #ec971f;
+.btn-zoo-action.btn-orange:hover {
+  background: #e0a800;
+  /* Sedikit lebih gelap saat hover */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
-  .zoo-card {
-    flex-direction: column;
-    /* Stack image and content on small screens */
+@media (min-width: 992px) {
+
+  /* Untuk layar desktop, tata letak dua kolom */
+  .zoo-grid-container {
+    grid-template-columns: repeat(2, 1fr);
+    /* Pastikan dua kolom */
   }
 
-  .zoo-card-img-col,
-  .zoo-card-body-col {
-    flex: 0 0 100%;
-    max-width: 100%;
+  .zoo-card {
+    flex-direction: row;
+    /* Gambar dan konten berdampingan */
+    max-height: 250px;
+    /* Batasi tinggi card di desktop */
+  }
+
+  .zoo-card-img-wrapper {
+    flex: 0 0 40%;
+    /* Ambil 40% lebar untuk gambar */
+    max-width: 40%;
+    padding-top: 0;
+    /* Hapus padding-top untuk flex item */
+    height: 100%;
+    /* Gambar mengisi tinggi parent */
   }
 
   .zoo-card-img {
-    border-radius: 12px 12px 0 0;
-    /* Adjust border radius for stacked layout */
-    height: 200px;
-    /* Fixed height for image on small screens */
+    border-radius: 15px 0 0 15px;
+    /* Sudut kiri bulat */
   }
 
-  .zoo-card-body-col {
-    padding-top: 15px;
-    /* Adjust padding */
+  .zoo-img-overlay {
+    border-radius: 0 0 0 15px;
+    /* Overlay sudut kiri bawah bulat */
+  }
+
+  .zoo-card-body {
+    flex: 0 0 60%;
+    /* Ambil 60% lebar untuk body */
+    max-width: 60%;
+    padding: 20px;
+    /* Sesuaikan padding */
+  }
+
+  .zoo-card-buttons {
+    flex-direction: column;
+    /* Tombol bertumpuk lagi di desktop */
+  }
+}
+
+
+@media (max-width: 768px) {
+  .zoo-main-title {
+    font-size: 2.2rem;
+    margin-bottom: 2rem !important;
+  }
+
+  .zoo-card {
+    flex-direction: column;
+    /* Pastikan gambar di atas teks */
+  }
+
+  .zoo-card-img-wrapper,
+  .zoo-card-body {
+    flex: 0 0 100%;
+    /* Ambil lebar penuh */
+    max-width: 100%;
+  }
+
+  .zoo-card-img-wrapper {
+    padding-top: 60%;
+    /* Tetap gunakan rasio aspek untuk gambar di mobile */
+  }
+
+  .zoo-card-img {
+    border-radius: 15px 15px 0 0;
+    /* Sudut atas bulat */
+  }
+
+  .zoo-img-overlay {
+    border-radius: 0;
+    /* Hilangkan border radius overlay di mobile jika tidak pas */
+  }
+
+  .zoo-card-title {
+    font-size: 1.4rem;
+  }
+
+  .zoo-card-description {
+    font-size: 0.9rem;
+    -webkit-line-clamp: 3;
+    /* Batasi 3 baris di mobile */
   }
 
   .zoo-card-buttons {
     flex-direction: row;
-    /* Tombol berdampingan pada mobile jika cukup */
+    /* Tombol berdampingan di mobile */
     justify-content: center;
+    /* Pusatkan tombol */
+    flex-wrap: wrap;
+    /* Pastikan tombol bisa wrap jika terlalu banyak */
+  }
+
+  .btn-zoo-action {
+    flex-grow: 1;
+    /* Tombol bisa tumbuh memenuhi ruang */
+    min-width: 130px;
+    /* Lebar minimum untuk tombol */
+    padding: 10px 15px;
+    font-size: 0.9rem;
   }
 }
 
-/* Footer style from previous components */
-.footer-text {
-  color: #6c757d;
-  font-size: 0.9rem;
-  margin: 0;
+@media (max-width: 480px) {
+  .zoo-main-title {
+    font-size: 1.8rem;
+  }
+
+  .zoo-card {
+    padding-bottom: 0;
+  }
+
+  .zoo-card-img-wrapper {
+    padding-top: 55%;
+    /* Sedikit menyesuaikan rasio gambar */
+  }
+
+  .zoo-img-overlay {
+    font-size: 1rem;
+    padding: 8px 12px;
+  }
+
+  .zoo-card-body {
+    padding: 20px;
+  }
+
+  .zoo-card-title {
+    font-size: 1.2rem;
+  }
+
+  .zoo-card-description {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 4;
+    /* Kembali ke 4 baris jika memungkinkan */
+  }
+
+  .zoo-card-buttons {
+    flex-direction: column;
+    /* Kembalikan ke bertumpuk jika terlalu sempit */
+  }
+
+  .btn-zoo-action {
+    min-width: unset;
+    /* Hapus min-width */
+    padding: 10px;
+    font-size: 0.95rem;
+  }
 }

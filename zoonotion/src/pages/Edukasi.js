@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Container, Button, Image, Row, Col } from 'react-bootstrap'; // Tambahkan Row, Col
+import { Container, Button, Image, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 // Impor file CSS yang baru dibuat
-import './Edukasi.css'; // Sesuaikan path jika file css berada di folder lain
+import './Edukasi.css';
 
 // Base path untuk gambar aset Anda
-const ASSET_PATH = '/assets'; // Jika gambar ada di public/assets
+const ASSET_PATH = '/assets';
 
 function Edukasi() {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ function Edukasi() {
       displayName: 'Aves (Burung)',
       image: `${ASSET_PATH}/buttonAves.png`,
       handler: () => {
-        navigate('/aves'); // Placeholder
+        navigate('/aves'); 
         console.log("Navigasi ke detail edukasi Aves.");
       }
     },
@@ -27,34 +27,34 @@ function Edukasi() {
       displayName: 'Reptil (Bunglon)',
       image: `${ASSET_PATH}/buttonReptil.png`,
       handler: () => {
-        navigate('#'); // Placeholder
+        navigate('/reptil'); // Pastikan path sesuai dengan App.js
         console.log("Navigasi ke detail edukasi Reptil.");
       }
     },
     {
       name: 'Amfibi',
-      displayName: 'Amfibi (Katak)', // Contoh: Anda bisa sesuaikan nama display
+      displayName: 'Amfibi (Katak)',
       image: `${ASSET_PATH}/buttonAmfibi.png`,
       handler: () => {
-        navigate('#'); // Placeholder
+        navigate('/amfibi'); // Pastikan path sesuai dengan App.js
         console.log("Navigasi ke detail edukasi Amfibi.");
       }
     },
     {
       name: 'Pisces',
-      displayName: 'Pisces (Ikan)', // Contoh
+      displayName: 'Pisces (Ikan)',
       image: `${ASSET_PATH}/buttonPisces.png`,
       handler: () => {
-        navigate('#'); // Placeholder
+        navigate('/pisces'); // Pastikan path sesuai dengan App.js
         console.log("Navigasi ke detail edukasi Pisces.");
       }
     },
     {
       name: 'Mamalia',
-      displayName: 'Mamalia (Hewan Menyusui)', // Contoh
+      displayName: 'Mamalia (Hewan Menyusui)',
       image: `${ASSET_PATH}/buttonMamalia.png`,
       handler: () => {
-        navigate('#'); // Placeholder
+        navigate('/mamalia'); // Pastikan path sesuai dengan App.js
         console.log("Navigasi ke detail edukasi Mamalia.");
       }
     },
@@ -80,20 +80,16 @@ function Edukasi() {
 
   return (
     <div className="edukasi-page-background">
-      <Container className="text-center" style={{ marginTop: '100px' }}>
-        <div className="edukasi-content-box d-flex flex-column align-items-center">
-          <div className="pin-blue top-left"></div>
-          <div className="pin-blue top-right"></div>
+      <Container className="d-flex justify-content-center align-items-center min-vh-100"> 
+        <div className="edukasi-content-box d-flex flex-column align-items-center text-center"> 
+          <h2 className="mb-4 text-dark fw-bold edukasi-title-main">Dunia Binatang</h2> {/* Tambah kelas untuk title utama */}
 
-          <h2 className="mb-4 text-dark fw-bold">Dunia Binatang</h2>
-
-          <div className="d-flex justify-content-center align-items-center mb-4" style={{ width: '100%' }}>
+          <div className="d-flex justify-content-center align-items-center mb-4 w-100 flex-wrap"> 
             {/* Tombol Sebelumnya */}
             <Button
               variant="link"
               onClick={goToPrevCategory}
-              className="p-0 me-3" // Padding 0, margin-end
-              style={{ fontSize: '2rem', color: '#33693C', textDecoration: 'none' }}
+              className="p-0 mx-3 arrow-btn" // mx-3 untuk margin horizontal, arrow-btn untuk styling
             >
               &#9664; {/* Karakter panah kiri */}
             </Button>
@@ -107,6 +103,7 @@ function Edukasi() {
               <Image
                 src={`${process.env.PUBLIC_URL}${activeCategory.image}`}
                 alt={activeCategory.displayName}
+                className="category-main-image" // Menambahkan class baru untuk gambar utama
               />
             </Button>
 
@@ -114,27 +111,16 @@ function Edukasi() {
             <Button
               variant="link"
               onClick={goToNextCategory}
-              className="p-0 ms-3" // Padding 0, margin-start
-              style={{ fontSize: '2rem', color: '#33693C', textDecoration: 'none' }}
+              className="p-0 mx-3 arrow-btn" // mx-3 untuk margin horizontal, arrow-btn untuk styling
             >
               &#9654; {/* Karakter panah kanan */}
             </Button>
           </div>
 
-          <h3 className="text-dark fw-bold">
+          <h3 className="text-dark fw-bold edukasi-category-name"> {/* Tambah kelas untuk nama kategori */}
             {activeCategory.displayName}
           </h3>
         </div>
-
-        {/* Anda bisa menghapus tombol "Ganti Kategori" ini jika sudah menggunakan tombol panah */}
-        {/* <div className="mt-4">
-          <Button
-            variant="secondary"
-            onClick={() => setActiveCategory(activeCategory === 'Aves' ? 'Reptil' : 'Aves')}
-          >
-            Ganti Kategori ({activeCategory === 'Aves' ? 'Lihat Reptil' : 'Lihat Aves'})
-          </Button>
-        </div> */}
       </Container>
     </div>
   );

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { FiArrowRight } from 'react-icons/fi'; // Pastikan Anda sudah menginstal react-icons
-import axios from 'axios'; // Import axios
+import { FiArrowRight } from 'react-icons/fi'; 
+import axios from 'axios'; 
 
 import './Artikel.css';
 
-// Base URL untuk API dan gambar
 const API_BASE_URL = "http://localhost:5000";
 
 function Artikel() {
@@ -23,14 +22,11 @@ function Artikel() {
     setError(null);
     try {
       const response = await axios.get(`${API_BASE_URL}/api/articles`);
-      // Sesuaikan pemetaan data jika nama properti API berbeda
       const formattedArticles = response.data.map(article => ({
         id: article.id,
         title: article.judul_artikel,
-        imageUrl: `${API_BASE_URL}${article.gambar_artikel}`, // Gabungkan base URL dengan path gambar dari API
+        imageUrl: `${API_BASE_URL}${article.gambar_artikel}`, 
         description: article.isi_artikel,
-        // Anda bisa menambahkan properti lain jika diperlukan, misal tanggal:
-        // date: article.tanggal_publikasi
       }));
       setArticleList(formattedArticles);
       setLoading(false);

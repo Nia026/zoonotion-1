@@ -1,97 +1,212 @@
 .edukasi-page-background {
   background-image: url('/public/assets/backgroundEdukasi.png');
   background-size: cover;
-  background-position: center;
+  background-position: center center;
   background-repeat: no-repeat;
   min-height: 100vh;
+  width: 100vw;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
+  position: relative;
+  overflow: hidden;
+  padding: 250px;
+  box-sizing: border-box;
 }
 
 .edukasi-content-box {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 15px;
-  padding: 30px 50px;
-  margin-bottom: 30px;
-  border: 2px solid #6c757d;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  max-width: 600px;
-  margin: 0 auto;
-  position: relative;
+  /* background: rgba(255, 255, 255, 0.95); */
+  /* border-radius: 25px; */
+  padding: 40px 60px;
+  /* border: 2px solid #a2845e; */
+  /* box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25); */
+  max-width: 900px;
+  width: 95%;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
+  box-sizing: border-box;
+  z-index: 1;
 }
 
-.pin-blue {
-  position: absolute;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background-color: #007bff;
+.edukasi-title-main {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #2c3e50;
+  margin-bottom: 2.5rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  line-height: 1.2;
 }
 
-.pin-blue.top-left {
-  top: 10px;
-  left: 10px;
+/* Styling untuk tombol panah */
+.arrow-btn {
+  font-size: 3.5rem;
+  color: #33693C !important;
+  text-decoration: none;
+  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+  padding: 0 1rem;
 }
 
-.pin-blue.top-right {
-  top: 10px;
-  right: 10px;
-}
-
-.edukasi-title {
-  font-size: 28px;
-  /* Contoh, sesuaikan jika perlu */
-  font-weight: 700;
-  color: #222;
-  margin-bottom: 32px;
-}
-
-.edukasi-subtitle {
-  font-size: 24px;
-  /* Contoh, sesuaikan jika perlu */
-  font-weight: 600;
-  color: #222;
-  margin-bottom: 8px;
+.arrow-btn:hover {
+  transform: scale(1.1);
+  color: #a2845e !important;
 }
 
 .button-image {
   background: none;
-  border: none;
-  padding: 0;
+    border: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease-in-out;
+    flex-shrink: 0;
 }
 
-.button-image img {
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
+.button-image:hover {
+  transform: scale(1.05);
 }
 
-.footer-text {
-  color: #6c757d;
-  font-size: 0.9rem;
-  margin: 0;
+.category-main-image {
+  width: 180px;
+    height: 180px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 6px solid #A2845E;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background-color: #f8f9fa;
+    padding: 5px;
 }
 
-/* General button styles for consistency, though you use react-bootstrap Button */
-/* Jika Anda ingin override button Bootstrap secara global, bisa di sini */
+.edukasi-category-name {
+  font-size: 2rem;
+    /* Sedikit lebih kecil untuk memulai */
+    font-weight: 700;
+    color: #2c3e50;
+    margin-top: 2rem;
+    /* Mengurangi sedikit margin */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 992px) {
+  .edukasi-page-background{
+    padding: 100px;
+  }
+
+  .edukasi-content-box {
+    top: 30%;
+    left: 50%;
+    width: 95%;
+    padding: 35px 50px;
+  }
+
+  .edukasi-title-main {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .arrow-btn {
+    font-size: 3rem;
+  }
+
+  .category-main-image {
+    width: 160px;
+    height: 160px;
+  }
+
+  .edukasi-category-name {
+    font-size: 1.8rem;
+    margin-top: 1.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .edukasi-page-background {
+      padding: 70px;
+  }
+
+  .edukasi-content-box {
+    padding: 30px 40px;
+    width: 95%;
+    top: 30%;
+  }
+
+  .edukasi-title-main {
+    font-size: 2.2rem;
+    margin-bottom: 1.8rem;
+  }
+
+  .arrow-btn {
+    font-size: 2.8rem;
+    margin: 0 10px;
+    /* Memberi sedikit jarak horizontal */
+  }
+
+  .category-main-image {
+    width: 140px;
+    height: 140px;
+    border-width: 5px;
+  }
+
+  .edukasi-category-name {
+    font-size: 1.6rem;
+    margin-top: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .edukasi-page-background {
+    padding: 2px;
+  }
+
+  .edukasi-content-box {
+    padding: 20px 25px;
+    width: 95%;
+    top: 30%;
+  }
+
+  .edukasi-title-main {
+    font-size: 1.8rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .arrow-btn {
+    font-size: 2.2rem;
+    margin: 8px 0;
+  }
+
+  .category-main-image {
+    width: 100px;
+    height: 100px;
+    border-width: 3px;
+    margin-bottom: 10px;
+  }
+
+  .edukasi-category-name {
+    font-size: 1.3rem;
+    margin-top: 1rem;
+  }
+}
+
 .btn-custom-green {
   background: #33693C;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 28px;
-  font-weight: 600;
-  font-size: 16px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(51, 105, 60, 0.08);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 28px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(51, 105, 60, 0.08);
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .btn-custom-green:hover {
   background: #2a5530;
-  /* Slightly darker on hover */
+  transform: translateY(-2px);
 }

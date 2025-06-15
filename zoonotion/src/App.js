@@ -24,6 +24,10 @@ import UserLayout from "./komponen/UserLayout";
 import AdminLayout from "./komponen/AdminLayout";
 import Edukasi from "./pages/Edukasi";
 import Aves from "./pages/Aves";
+import Reptil from "./pages/Reptil";
+import Amfibi from "./pages/Amfibi";
+import Pisces from "./pages/Pisces";
+import Mamalia from "./pages/Mamalia";
 
 function App() {
   return (
@@ -37,7 +41,11 @@ function App() {
         <Route path="/detail-artikel/:id" element={<UserLayout><DetailArtikel /></UserLayout>} />
         <Route path="/profiles" element={<UserLayout><Profiles /></UserLayout>} />
         <Route path="/education" element={<UserLayout><Edukasi /></UserLayout>} /> 
-        <Route path="/aves" element={<UserLayout><Aves /></UserLayout>} />  
+        <Route path="/aves" element={<UserLayout><Aves /></UserLayout>} />
+        <Route path="/reptil" element={<UserLayout><Reptil /></UserLayout>} /> 
+        <Route path="/amfibi" element={<UserLayout><Amfibi /></UserLayout>} />  
+        <Route path="/pisces" element={<UserLayout><Pisces /></UserLayout>} /> 
+        <Route path="/mamalia" element={<UserLayout><Mamalia /></UserLayout>} /> 
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

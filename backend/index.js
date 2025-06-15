@@ -476,8 +476,6 @@ app.put('/api/profile/:userId', upload.single('foto_profil'), async (req, res) =
         return res.status(404).json({ message: 'User not found.' });
     }
 
-    // Periksa apakah profil untuk user_id ini sudah ada
-    // Menggunakan findFirst untuk memeriksa keberadaan profil
     const existingUserProfile = await prisma.user_profiles.findFirst({
         where: { user_id: userId }
     });
@@ -495,12 +493,11 @@ app.put('/api/profile/:userId', upload.single('foto_profil'), async (req, res) =
             },
         });
     } else {
-        // Jika profil belum ada, buat baru (create)
         updatedProfile = await prisma.user_profiles.create({
             data: {
                 user_id: userId,
-                username: userBaseData.username, // Ambil dari data users
-                email: userBaseData.email,     // Ambil dari data users
+                username: userBaseData.username, 
+                email: userBaseData.email,     
                 tanggal_lahir: tanggal_lahir ? new Date(tanggal_lahir) : null,
                 alamat: alamat,
                 noted: noted,
@@ -511,8 +508,8 @@ app.put('/api/profile/:userId', upload.single('foto_profil'), async (req, res) =
 
     const formattedResponse = {
       user_id: updatedProfile.user_id,
-      username: userBaseData.username, // Pastikan selalu dari tabel users
-      email: userBaseData.email,     // Pastikan selalu dari tabel users
+      username: userBaseData.username, 
+      email: userBaseData.email,     
       foto_profil: updatedProfile.foto_profil,
       tanggal_lahir: updatedProfile.tanggal_lahir ? updatedProfile.tanggal_lahir.toISOString().split('T')[0] : null,
       alamat: updatedProfile.alamat,

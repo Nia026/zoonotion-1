@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button, Card, Image } from 'react-bootstrap';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Jika Anda ingin menggunakan navigate untuk tombol
+import { useNavigate } from 'react-router-dom';
 
 // Impor file CSS
 import './Tiket.css';
@@ -14,7 +14,7 @@ function Zoo() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const navigate = useNavigate(); // Jika Anda ingin menggunakan navigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchZoos();
@@ -37,7 +37,7 @@ function Zoo() {
   return (
     <div className="zoo-page-background">
       <Container className="py-5">
-        <h1 className="text-center mb-4" style={{ color: '#222', fontWeight: 'bold' }}>
+        <h1 className="text-center mb-5 zoo-main-title">
           Informasi Kebun Binatang
         </h1>
 
@@ -51,41 +51,45 @@ function Zoo() {
           <div className="zoo-grid-container">
             {zoos.map((zoo) => (
               <Card key={zoo.id} className="zoo-card">
-                <div className="zoo-card-img-col">
-                  <Card.Img
-                    src={`${API_BASE_URL}${zoo.gambar_zoo}`}
-                    alt={zoo.nama_kebun_binatang}
-                    className="zoo-card-img"
-                  />
+                {/* Mengubah struktur di dalam Card sesuai desain */}
+                <div className="zoo-card-img-wrapper"> {/* Wrapper baru untuk gambar dan overlay */}
+                  {zoo.gambar_zoo && (
+                    <Card.Img
+                      src={`${API_BASE_URL}${zoo.gambar_zoo}`}
+                      alt={zoo.nama_kebun_binatang}
+                      className="zoo-card-img"
+                    />
+                  )}
                 </div>
-                <div className="zoo-card-body-col">
-                  <div> {/* Wrapper for title and description */}
-                    <Card.Title className="zoo-card-title">{zoo.nama_kebun_binatang}</Card.Title>
-                    <Card.Text className="zoo-card-description">
-                      {zoo.deskripsi_kebun_binatang ? zoo.deskripsi_kebun_binatang.substring(0, 200) + '...' : '-'}
-                    </Card.Text>
-                  </div>
+
+                <Card.Body className="zoo-card-body"> {/* Menggunakan Card.Body bawaan Bootstrap */}
+                  <Card.Title className="zoo-card-title">{zoo.nama_kebun_binatang}</Card.Title>
+                  <Card.Text className="zoo-card-description">
+                    {zoo.deskripsi_kebun_binatang ? zoo.deskripsi_kebun_binatang.substring(0, 150) + '...' : '-'} {/* Batasi deskripsi */}
+                  </Card.Text>
                   <div className="zoo-card-buttons">
                     <Button
-                      as="a" /* Render as an anchor tag */
+                      as="a"
                       href={zoo.link_web_resmi}
-                      target="_blank" /* Open in new tab */
+                      target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-zoo-action"
+                      className="btn-zoo-action btn-green"
                     >
                       Website Resmi
                     </Button>
-                    <Button
-                      as="a"
-                      href={zoo.link_tiket}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-zoo-action secondary" /* Menambahkan kelas secondary untuk warna berbeda */
-                    >
-                      Pembelian Tiket
-                    </Button>
+                    {zoo.link_tiket && ( // Hanya tampilkan tombol tiket jika linknya ada
+                      <Button
+                        as="a"
+                        href={zoo.link_tiket}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-zoo-action btn-orange"
+                      >
+                        Pembelian Tiket
+                      </Button>
+                    )}
                   </div>
-                </div>
+                </Card.Body>
               </Card>
             ))}
           </div>

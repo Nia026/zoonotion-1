@@ -1,49 +1,42 @@
 .home-page {
   background-image: url('/public/assets/Background.png');
   padding-bottom: 50px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
-.banner-container {
-  position: relative;
-  width: 100%;
-  height: 90vh;
-  /* height: 560px; */
-  overflow: hidden;
+.banner-wrapper {
+  display: flex;
+  justify-content: center;
+  padding-top: 30px;
 }
 
 .banner-image {
-  width: 100%;
-  height: 100%;
+  width: 90%;
+  height: 500px;
   object-fit: cover;
-  justify-content: center;
-}
-
-.banner-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #f5f4f4;
-  font-size: 36px;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-  text-align: center;
-  width: 80%;
 }
 
 .vision-card {
   background-color: #a2845e;
+  border-radius: 15px;
+  padding: 25px;
 }
 
 .mission-card {
   background-color: #214b26;
+  border-radius: 15px;
+  padding: 25px;
 }
 
 .contact-card {
   background-color: #214b26;
+  border-radius: 15px;
+  padding: 25px;
 }
 
-.mt-2{
-  color: black;
-  text-align: center;
+p.lead {
+  font-size: 1.1rem;
+  line-height: 1.6;
 }
