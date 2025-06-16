@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { FiArrowLeft } from 'react-icons/fi';
 import axios from 'axios'; // Import axios
 
-import './Artikel.css'; // Mempertahankan styling yang sudah ada
+import './Artikel.css'; 
 
 // Base URL untuk API dan gambar
 const API_BASE_URL = "http://localhost:5000";
@@ -90,38 +90,43 @@ function DetailArtikel() {
   }
 
   return (
-    <div className="bg-brown-light py-5">
-      <Container className="py-5 mt-5"> {/* Menambahkan mt-5 untuk space dari navbar */}
+    <div className="article-detail-wrapper py-5">
+      <Container className="mt-5">
         <Row className="justify-content-center">
-          <Col md={10} lg={8}>
-            <div className="bg-green-dark text-white rounded p-4 shadow">
-              <h1 className="text-center mb-3 fw-bold" style={{ fontSize: '32px' }}>{article.title}</h1>
-              <p className="text-center text-secondary mb-3" style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.7) !important' }}>
+          <Col  style={{ maxWidth: '90%' }}>
+            <div className="bg-white p-4 p-md-5 rounded shadow article-card-custom">
+              <div className="text-center mb-4">
+                <img 
+                  src={article.imageUrl} 
+                  alt={article.title} 
+                  className="img-fluid rounded" 
+                  style={{ maxHeight: '400px', objectFit: 'cover', width: '100%' }} 
+                />
+              </div>
+              <h2 className="text-center fw-bold mb-3" style={{ fontSize: '28px' }}>
+                {article.title}
+              </h2>
+              <p className="text-center text-muted mb-4">
                 Ditulis oleh: {article.author} | Dirilis tahun: {article.publishDate}
               </p>
-              <hr className="my-4 border-light" />
-              <div className="text-center mb-4">
-                <img src={article.imageUrl} alt={article.title} className="img-fluid rounded" style={{ maxWidth: '600px', height: 'auto' }} />
-              </div>
-              <div className="text-justify" style={{ fontSize: '16px', lineHeight: '1.8' }}>
-                {/* Mengganti split('\n') dengan innerHTML jika deskripsi berisi HTML */}
-                {/* Jika isi_artikel API berupa plain text dan mengandung '\n' untuk paragraf: */}
+
+              <div className="article-body" style={{ fontSize: '16px', lineHeight: '1.8', color: '#333' }}>
                 {article.fullDescription.split('\n').map((paragraph, index) => (
                   <p key={index} className="mb-3">{paragraph}</p>
                 ))}
-                {/* Jika isi_artikel API bisa berisi HTML (misal dari rich text editor), gunakan dangerouslySetInnerHTML: */}
-                {/* <div dangerouslySetInnerHTML={{ __html: article.fullDescription }}></div> */}
               </div>
 
-              <Button
-                variant="outline-light"
-                size="sm"
-                as={Link}
-                to={`/article`}
-                className="custom-button read-more-button mt-4" // Tambah margin top
-              >
-                <FiArrowLeft className="arrow-icon" /> Kembali
-              </Button>
+              <div className="text-center mt-4">
+                <Button
+                  as={Link}
+                  to="/article"
+                  variant="outline-success"
+                  className="px-4"
+                >
+                  <FiArrowLeft className="me-2" />
+                  Kembali ke Daftar Artikel
+                </Button>
+              </div>
             </div>
           </Col>
         </Row>

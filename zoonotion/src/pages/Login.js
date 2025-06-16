@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
 import axios from "axios";
-import styles from "./AuthStyles.module.css";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -41,16 +40,16 @@ function Login() {
     setError("");
     try {
       const response = await axios.post("http://localhost:5000/api/users/login", {
-        email, // Anda mungkin perlu field khusus untuk admin login
-        password, // Anda mungkin perlu field khusus untuk admin login
-        role: "admin_login", // Atau cara lain backend membedakan login admin
+        email,
+        password,
+        role: "admin_login",
       });
 
       const { user } = response.data;
 
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("userRole", "admin"); // Set role di frontend
+      localStorage.setItem("userRole", "admin");
       navigate("/admin/dashboard");
     } catch (err) {
       const msg =
@@ -60,52 +59,68 @@ function Login() {
   };
 
   return (
-    <Container fluid className={`${styles.authContainer} mt-0`}> {/* mt-0 karena sudah di tengah */}
-      <Row className="justify-content-center">
-        <Col xs={12} md={8} lg={8} xl={12} className={styles.authCard}>
-          <div className="text-center mb-4">
-            <img src="/assets/Logo.png" alt="Zoonotion Logo" height="70" />
-            <h3 className="mt-3">Login ke Zoonotion</h3>
+    <Container fluid className="p-0" style={{ height: '100vh' }}>
+      <Row className="g-0 h-100">
+        {/* Kiri - Form Login */}
+        <Col xs={12} md={6} className="d-flex align-items-center justify-content-center">
+          <div className="w-75">
+            <div className="text-center mb-4">
+              <img src="/assets/Logo.png" alt="Zoonotion Logo" height="80" />
+            </div>
+
+            {error && <Alert variant="danger">{error}</Alert>}
+
+            <Form onSubmit={handleSubmit}>
+              <Form.Group className="mb-4">
+                <Form.Control
+                  type="email"
+                  placeholder="Masukkan Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="py-3 rounded-pill shadow-sm border-0"
+                  required
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Control
+                  type="password"
+                  placeholder="Masukkan Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="py-3 rounded-pill shadow-sm border-0"
+                  required
+                />
+              </Form.Group>
+
+              {/* <div className="mb-4 text-start">
+                <Link to="#" className="text-decoration-none text-dark">Lupa Password</Link>
+              </div> */}
+
+              <div className="d-grid">
+                <Button type="submit" className="rounded-pill py-2 fs-5" style={{ backgroundColor: '#9c7b4d', border: 'none' }}>
+                  Login
+                </Button>
+              </div>
+            </Form>
+
+            <div className="text-center mt-4">
+              <span className="me-2 fw-semibold">Sign up</span>
+              <span className="fw-bold">|</span>
+              <Link to="/register" className="ms-2 text-decoration-none fw-semibold text-dark">Sign in</Link>
+            </div>
+
+            {/* <div className="text-center mt-3">
+              <Link to="#" onClick={handleAdminLogin} className="fw-semibold text-dark text-decoration-none">
+                Login As Admin
+              </Link>
+            </div> */}
           </div>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formEmail" className={`mb-3 ${styles.formGroup}`}>
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Masukkan email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className={styles.formControl}
-              />
-            </Form.Group>
+        </Col>
 
-            <Form.Group controlId="formPassword" className={`mb-4 ${styles.formGroup}`}>
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Masukkan password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className={styles.formControl}
-              />
-            </Form.Group>
-
-            <Button variant="primary" type="submit" className={styles.authButton}>
-              Login
-            </Button>
-          </Form>
-
-          <div className={styles.authLinkContainer}>
-            <small>
-              Belum punya akun? <Link to="/register" className={styles.authLink}>Sign up</Link>
-            </small>
-            <Link to="#" onClick={handleAdminLogin} className={styles.adminLink}>
-              Login As Admin
-            </Link>
-          </div>
+        {/* Kanan - Gambar Iguana */}
+        <Col md={6} className="d-none d-md-block">
+          <img src="/assets/loginGambar.png" alt="Login Background" className="img-fluid h-100 w-100" style={{ objectFit: 'cover' }} />
         </Col>
       </Row>
     </Container>

@@ -1,13 +1,9 @@
 /* src/pages/Tiket.css */
 
 .zoo-page-background {
-  background-color: #F4F6F8;
-  /* Warna background yang terang */
+  /* background-color: #F4F6F8; */
+  background-image: url('/public/assets/Background2.png');
   min-height: 100vh;
-  padding-top: 120px;
-  /* Ruang untuk navbar, disesuaikan */
-  padding-bottom: 80px;
-  /* Ruang untuk footer, disesuaikan */
 }
 
 .zoo-main-title {

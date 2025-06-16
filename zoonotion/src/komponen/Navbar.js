@@ -9,7 +9,7 @@ function NavigationBar() {
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
-    setIsLoggedIn(!!userData); // true jika ada user
+    setIsLoggedIn(!!userData); 
   }, [location]);
 
   const handleLogout = () => {
@@ -51,7 +51,7 @@ function NavigationBar() {
   }
 
   return (
-    <Navbar bg="white" expand="lg" className="shadow">
+    <Navbar bg="white" expand="lg" className="shadow sticky-top"> 
       <Container>
         <Navbar.Brand as={Link} to="/">
           <img

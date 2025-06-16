@@ -94,109 +94,65 @@ function Reptil() {
   }
 
   return (
-    <div className="education-reptil-page education-category-page"> {/* Menggunakan class yang sama */}
-      <div className="header-reptil-bg category-header-bg"> {/* Class baru untuk background khusus Reptil */}
-        <div className="overlay"></div>
-        <Container className="py-5 text-white position-relative header-content">
-          <Row className="justify-content-center align-items-center">
-            <Col md={8} lg={7} className="text-center text-md-start">
-              <h1 className="display-4 fw-bold category-title">REPTIL</h1>
-            </Col>
-            <Col md={4} lg={5} className="mt-4 mt-md-0 d-flex justify-content-center justify-content-md-end">
-              {/* Card untuk penjelasan umum Reptil - menggunakan data hardcoded */}
-              <Card className="category-explanation-card" onClick={handleShowReptilModal}>
-                <Card.Body className="d-flex flex-column align-items-center text-center">
-                  <img
-                    src={REPTIL_GENERAL_EXPLANATION_DATA.gambar_hewan}
-                    alt="Reptil"
-                    className="category-general-img mb-3"
-                  />
-                  <Card.Text className="text-dark fw-semibold category-name">
-                    {REPTIL_GENERAL_EXPLANATION_DATA.nama_hewan}
-                  </Card.Text>
-                  <div className="mt-auto">
-                    <Button variant="link" className="text-decoration-none fw-bold learn-more-btn">
-                      Penjelasan Reptil <FaArrowRight className="ms-2" />
-                    </Button>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
+    <div className="education-reptil-page education-category-page">
+      <div className="main-header">
+        <div className="category-header-bg" style={{ backgroundImage: `url(${REPTIL_GENERAL_EXPLANATION_DATA.gambar_hewan})` }} onClick={handleShowReptilModal}>
+          <h1 className="fw-bold">REPTIL</h1>
+        </div>
       </div>
 
-      <Container className="animal-grid-section py-5">
-        <Row className="g-4">
+      <Container className="py-4">
+        <Row className="g-3">
           {educations.length > 0 ? (
             educations.map(animal => (
               <Col key={animal.id} xs={12} sm={6} md={4} lg={3}>
-                <Card className="animal-card" onClick={() => handleShowAnimalModal(animal)}>
-                  <Card.Body className="d-flex flex-column align-items-center text-center">
-                    <img src={animal.gambar_hewan ? `${API_BASE_URL}${animal.gambar_hewan}` : `${process.env.PUBLIC_URL}/placeholder-animal.png`} alt={animal.nama_hewan} className="animal-img mb-3" />
-                    <Card.Title className="animal-name mb-0">{animal.nama_hewan}</Card.Title>
+                <Card className="animal-card-simple" onClick={() => handleShowAnimalModal(animal)}>
+                  <Card.Img variant="top" src={animal.gambar_hewan ? `${API_BASE_URL}${animal.gambar_hewan}` : `${process.env.PUBLIC_URL}/placeholder-animal.png`} alt={animal.nama_hewan} className="animal-img" />
+                  <Card.Body className="text-center">
+                    <Card.Title className="animal-name">{animal.nama_hewan}</Card.Title>
                   </Card.Body>
                 </Card>
               </Col>
             ))
           ) : (
             <Col className="text-center">
-              <p className="no-data-message">Belum ada data hewan Reptil yang tersedia.</p>
+              <p>Belum ada data hewan Reptil yang tersedia.</p>
             </Col>
           )}
         </Row>
       </Container>
 
-      {/* Modal untuk Penjelasan Umum Reptil - Menggunakan data hardcoded */}
-      <Modal show={showReptilModal} onHide={handleCloseReptilModal} centered size="lg">
-        <Modal.Header closeButton className="category-modal-header reptil-modal-header"> {/* Class baru untuk background khusus Reptil */}
-          <Modal.Title className="w-100 text-center modal-title-custom">Dunia Binatang</Modal.Title>
+      {/* Modal Reptil (penjelasan umum) */}
+      <Modal show={showReptilModal} onHide={handleCloseReptilModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>{REPTIL_GENERAL_EXPLANATION_DATA.nama_hewan}</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="category-modal-body reptil-modal-body"> {/* Class baru untuk background khusus Reptil */}
-          <div className="text-center mb-4">
-            <img
-              src={REPTIL_GENERAL_EXPLANATION_DATA.gambar_hewan}
-              alt="Reptil"
-              className="img-fluid category-modal-img"
-            />
-            <h4 className="mt-3 modal-animal-name">{REPTIL_GENERAL_EXPLANATION_DATA.nama_hewan}</h4>
-          </div>
-          <p className="category-explanation-text">{REPTIL_GENERAL_EXPLANATION_DATA.penjelasan_umum}</p>
-          {REPTIL_GENERAL_EXPLANATION_DATA.ciri_ciri && REPTIL_GENERAL_EXPLANATION_DATA.ciri_ciri.length > 0 && (
-            <>
-              <h5 className="mt-4 modal-subtitle">Ciri-ciri utama kelas Reptil:</h5>
-              <ul className="modal-feature-list">
-                {REPTIL_GENERAL_EXPLANATION_DATA.ciri_ciri.map((ciri, index) => (
-                  <li key={index}>{ciri}</li>
-                ))}
-              </ul>
-            </>
-          )}
+        <Modal.Body>
+          <p>{REPTIL_GENERAL_EXPLANATION_DATA.penjelasan_umum}</p>
+          <ul className="modal-feature-list">
+            {REPTIL_GENERAL_EXPLANATION_DATA.ciri_ciri.map((ciri, index) => (
+              <li key={index}>{ciri}</li>
+            ))}
+          </ul>
         </Modal.Body>
-        <Modal.Footer className="modal-footer-custom">
-          <Button variant="secondary" onClick={handleCloseReptilModal} className="btn-close-modal">
-            Tutup
-          </Button>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseReptilModal}>Tutup</Button>
         </Modal.Footer>
       </Modal>
 
-      {/* Modal untuk Detail Hewan (TETAP DARI API) */}
-      <Modal show={showAnimalModal} onHide={handleCloseAnimalModal} centered size="lg">
-        <Modal.Header closeButton className="animal-modal-header modal-header-custom">
-          <Modal.Title className="w-100 text-center modal-title-custom">{currentAnimalDetail?.nama_hewan}</Modal.Title>
+      {/* Modal detail hewan */}
+      <Modal show={showAnimalModal} onHide={handleCloseAnimalModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>{currentAnimalDetail?.nama_hewan}</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="animal-modal-body modal-body-custom">
+        <Modal.Body>
           {currentAnimalDetail && (
-            <div className="text-center mb-4">
-              <img src={currentAnimalDetail.gambar_hewan ? `${API_BASE_URL}${currentAnimalDetail.gambar_hewan}` : `${process.env.PUBLIC_URL}/placeholder-animal.png`} alt={currentAnimalDetail.nama_hewan} className="img-fluid animal-modal-img" />
-            </div>
+            <img src={currentAnimalDetail.gambar_hewan ? `${API_BASE_URL}${currentAnimalDetail.gambar_hewan}` : `${process.env.PUBLIC_URL}/placeholder-animal.png`} alt={currentAnimalDetail.nama_hewan} className="img-fluid modal-animal-img mb-3" />
           )}
-          <p className="animal-description-text">{currentAnimalDetail?.deskripsi_hewan}</p>
+          <p>{currentAnimalDetail?.deskripsi_hewan}</p>
         </Modal.Body>
-        <Modal.Footer className="modal-footer-custom">
-          <Button variant="secondary" onClick={handleCloseAnimalModal} className="btn-close-modal">
-            Tutup
-          </Button>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseAnimalModal}>Tutup</Button>
         </Modal.Footer>
       </Modal>
     </div>

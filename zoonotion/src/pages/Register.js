@@ -87,103 +87,111 @@ function Register() {
   }, [verificationSuccess, navigate]);
 
   return (
-    <Container fluid className={`${styles.registerContainer} mt-0`}>
-      <Row className="justify-content-center">
-        <Col xs={12} md={8} lg={8} xl={12} className={styles.authCard}>
-          <div className="text-center mb-4">
-            <img src="/assets/Logo.png" alt="Zoonotion Logo" height="70" />
-            <h3 className="mt-3">Daftar Akun Baru</h3>
-          </div>
-          {error && <Alert variant="danger">{error}</Alert>}
-          {success && !verificationSuccess && <Alert variant="success">{success}</Alert>}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formUsername" className={`mb-3 ${styles.formGroup}`}>
-              <Form.Label>Username</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Masukkan username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                className={styles.formControl}
-              />
-            </Form.Group>
+    <Container fluid className="p-0" style={{ height: '100vh' }}>
+      <Row className="g-0 h-100">
+        {/* Left Image */}
+        <Col md={6} className="d-none d-md-block">
+          <img src="/assets/registerGambar.png" alt="Zoo Register" className="img-fluid h-100 w-100" style={{ objectFit: 'cover' }} />
+        </Col>
 
-            <Form.Group controlId="formEmail" className={`mb-3 ${styles.formGroup}`}>
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Masukkan email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className={styles.formControl}
-              />
-            </Form.Group>
+        {/* Right Form */}
+        <Col xs={12} md={6} className="d-flex align-items-center justify-content-center">
+          <div className="w-75">
+            <div className="text-center mb-4">
+              <img src="/assets/Logo.png" alt="Zoonotion Logo" height="80" />
+            </div>
 
-            <Form.Group controlId="formPassword" className={`mb-4 ${styles.formGroup}`}>
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Masukkan password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className={styles.formControl}
-              />
-            </Form.Group>
+            {error && <Alert variant="danger">{error}</Alert>}
+            {success && !verificationSuccess && <Alert variant="success">{success}</Alert>}
 
-            <Button variant="primary" type="submit" className={styles.authButton}>
-              Register
-            </Button>
-          </Form>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group className="mb-4">
+                <Form.Control
+                  type="text"
+                  placeholder="Masukkan Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="py-3 rounded-pill shadow-sm border-0"
+                />
+              </Form.Group>
 
-          <div className={styles.authLinkContainer}>
-            <small>
-              Sudah punya akun? <Link to="/login" className={styles.authLink}>Sign in</Link>
-            </small>
+              <Form.Group className="mb-4">
+                <Form.Control
+                  type="email"
+                  placeholder="Masukkan Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="py-3 rounded-pill shadow-sm border-0"
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-4">
+                <Form.Control
+                  type="password"
+                  placeholder="Masukkan Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="py-3 rounded-pill shadow-sm border-0"
+                />
+              </Form.Group>
+
+              <div className="d-grid">
+                <Button type="submit" className="rounded-pill py-2 fs-5" style={{ backgroundColor: '#9c7b4d', border: 'none' }}>
+                  Register
+                </Button>
+              </div>
+            </Form>
+
+            <div className="text-center mt-4">
+              <span className="me-2">Sign up</span>
+              <span className="fw-bold">|</span>
+              <Link to="/login" className="ms-2 text-decoration-none fw-semibold text-dark">Sign in</Link>
+            </div>
           </div>
         </Col>
       </Row>
 
-      {/* OTP Verification Modal */}
+      {/* OTP Modal */}
       <Modal show={showOtpModal} onHide={() => setShowOtpModal(false)} centered>
-        <Modal.Body className={styles.otpModalBody}>
-          <img src="/assets/email_verification.png" alt="Email Verification" height="80" className="mb-3" />
-          <p>Kami telah mengirimkan kode verifikasi ke alamat email <strong>{pendingEmail}</strong></p>
-          <p>Silakan masukkan kode dan verifikasi akun Anda</p>
-          <Form onSubmit={handleVerifyOtp} className="mt-3">
-            <div className={styles.otpInputContainer}>
+        <Modal.Body className="text-center p-4">
+          <img src="/assets/email_verification.png" alt="Verifikasi Email" height="80" className="mb-3" />
+          <h5>Verifikasi Email</h5>
+          <p className="mb-3">Kode verifikasi dikirim ke <strong>{pendingEmail}</strong></p>
+
+          <Form onSubmit={handleVerifyOtp}>
+            <div className="d-flex justify-content-center gap-2 mb-3">
               {[...Array(6)].map((_, index) => (
                 <Form.Control
                   key={index}
                   type="text"
                   maxLength="1"
-                  className={`${styles.otpInput}`}
                   value={otp[index] || ""}
                   onChange={(e) => {
                     const newOtp = otp.split("");
                     newOtp[index] = e.target.value;
                     setOtp(newOtp.join(""));
                   }}
-                  required
+                  className="text-center"
+                  style={{ width: '40px', height: '45px', fontSize: '18px' }}
                 />
               ))}
             </div>
-            <Button variant="success" type="submit" className={styles.verifyButton}>
+
+            <Button type="submit" className="rounded-pill px-4" variant="success">
               Verifikasi
             </Button>
+
             {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
           </Form>
         </Modal.Body>
       </Modal>
 
-      {/* Verification Success Modal */}
-      <Modal show={verificationSuccess} onHide={() => {}} centered>
-        <Modal.Body className={styles.successModalBody}>
-          <img src="/assets/verification_success.png" alt="Verification Success" height="80" className="mb-3" />
-          <h4 className="mb-3">Selamat! Verifikasi akun berhasil</h4>
-          <p>Welcome to Zoo Notion</p>
+      {/* Success Modal */}
+      <Modal show={verificationSuccess} onHide={() => {}} backdrop="static" centered>
+        <Modal.Body className="text-center p-4">
+          <img src="/assets/verification_success.png" alt="Berhasil" height="80" className="mb-3" />
+          <h4 className="mb-2">Selamat!</h4>
+          <p>Verifikasi akun berhasil. Welcome to Zoo Notion</p>
         </Modal.Body>
       </Modal>
     </Container>

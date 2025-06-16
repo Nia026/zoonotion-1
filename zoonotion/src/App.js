@@ -28,6 +28,11 @@ import Reptil from "./pages/Reptil";
 import Amfibi from "./pages/Amfibi";
 import Pisces from "./pages/Pisces";
 import Mamalia from "./pages/Mamalia";
+import EditArtikel from "./Admin/EditArtikel";
+import EditHewan from "./Admin/EditHewan";
+import KelolaZoo from "./Admin/KelolaZoo";
+import EditZoo from "./Admin/EditZoo";
+import EditEvent from "./Admin/EditEvent";
 
 function App() {
   return (
@@ -103,6 +108,31 @@ function App() {
         <Route path="/tambah-hewan" element={<ProtectedRoute isAdmin={true}>
               <AdminLayout>
                 <TambahHewan />
+              </AdminLayout>
+            </ProtectedRoute>} />
+        <Route path="/edit-artikel/:id" element={<ProtectedRoute isAdmin={true}>
+              <AdminLayout>
+                <EditArtikel />
+              </AdminLayout>
+            </ProtectedRoute>} />
+        <Route path="/edit-hewan/:id" element={<ProtectedRoute isAdmin={true}>
+              <AdminLayout>
+                <EditHewan />
+              </AdminLayout>
+            </ProtectedRoute>} />
+        <Route path="/admin/kelolaZoo" element={<ProtectedRoute isAdmin={true}>
+              <AdminLayout>
+                <KelolaZoo />
+              </AdminLayout>
+            </ProtectedRoute>} />
+        <Route path="/edit-zoo/:id" element={<ProtectedRoute isAdmin={true}>
+              <AdminLayout>
+                <EditZoo />
+              </AdminLayout>
+            </ProtectedRoute>} />
+        <Route path="/edit-event/:id" element={<ProtectedRoute isAdmin={true}>
+              <AdminLayout>
+                <EditEvent />
               </AdminLayout>
             </ProtectedRoute>} />
 

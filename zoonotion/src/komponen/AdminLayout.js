@@ -20,7 +20,7 @@ function AdminLayout({ children }) {
               <Link to="/admin/manajemen-event" className="nav-link">Manajemen Event</Link>
             </li>
             <li className="nav-item">
-              <Link to="/admin/manajemen-zoo" className="nav-link">Manajemen Zoo</Link>
+              <Link to="/admin/kelolaZoo" className="nav-link">Manajemen Zoo</Link>
             </li>
             <li className="nav-item">
               <Link to="/admin/kelola-hewan" className="nav-link">Kelola Hewan</Link>

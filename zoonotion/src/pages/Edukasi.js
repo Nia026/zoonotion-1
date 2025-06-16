@@ -82,7 +82,10 @@ function Edukasi() {
     <div className="edukasi-page-background">
       <Container className="d-flex justify-content-center align-items-center min-vh-100"> 
         <div className="edukasi-content-box d-flex flex-column align-items-center text-center"> 
-          <h2 className="mb-4 text-dark fw-bold edukasi-title-main">Dunia Binatang</h2> {/* Tambah kelas untuk title utama */}
+          {/* <h2 className="mb-4 text-dark fw-bold edukasi-title-main">Dunia Binatang</h2>  */}
+          <h1 className="text-center mb-5 zoo-main-title">
+            Dunia Binatang
+          </h1>
 
           <div className="d-flex justify-content-center align-items-center mb-4 w-100 flex-wrap"> 
             {/* Tombol Sebelumnya */}

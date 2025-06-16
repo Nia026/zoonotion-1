@@ -60,8 +60,8 @@ function Community() {
           />
         </div>
 
-        <h1 className="text-center mb-4" style={{ color: '#222', fontWeight: 'bold' }}>
-          Jelajahi Komunitas Kami
+        <h1 className="text-center mb-5 zoo-main-title">
+          Jelajahi Komunitas Kami 
         </h1>
 
         {loading ? (
@@ -73,7 +73,7 @@ function Community() {
         ) : (
           <div className="community-grid-container">
             {communities.map((community) => (
-              <Card key={community.id} className="community-card">
+              <Card key={community.id} className="community-card h-100">
                 <Card.Img
                   variant="top"
                   src={`${API_BASE_URL}${community.banner_komunitas}`}
@@ -82,8 +82,9 @@ function Community() {
                 />
                 <Card.Body className="community-card-body">
                   <Card.Title className="community-card-title">{community.nama_komunitas}</Card.Title>
-                  <Card.Subtitle className="community-card-subtitle mb-2 text-muted">
-                    Penyelenggara: {community.nama_penyelenggara} | Tahun Event: {community.tahun_penyelenggara}
+                  <Card.Subtitle className="community-card-subtitle mb-2">
+                    <div>Diselenggara oleh: <strong>{community.nama_penyelenggara}</strong></div>
+                    <div>Tahun Event: <strong>{community.tahun_penyelenggara}</strong></div>
                   </Card.Subtitle>
                   <Card.Text className="community-card-description">
                     {community.deskripsi_komunitas ? community.deskripsi_komunitas.substring(0, 100) + '...' : '-'}
@@ -109,12 +110,13 @@ function Community() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-4">
+          <h5 className="mb-3">Detail Komunitas</h5>
           <Tabs
             id="community-tabs"
             activeKey={key}
             onSelect={(k) => setKey(k)}
             className="mb-3 modal-body-tabs"
-            justify // Membuat tab merata
+            justify
           >
             <Tab eventKey="event" title="Event">
               <div className="detail-event-section">

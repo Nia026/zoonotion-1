@@ -3,14 +3,12 @@ import Sidebar from "./Sidebar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-// Base URL untuk gambar dari backend
-// Pastikan ini sesuai dengan alamat server backend Anda
 const API_BASE_URL = "http://localhost:5000";
 
 export default function KelolaArtikel() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true); // Tambahkan state loading
-  const [error, setError] = useState(null);   // Tambahkan state error
+  const [error, setError] = useState(null);    // Tambahkan state error
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,7 +17,7 @@ export default function KelolaArtikel() {
 
   const fetchArticles = () => {
     setLoading(true); // Mulai loading
-    setError(null);   // Reset error
+    setError(null);    // Reset error
     axios.get(`${API_BASE_URL}/api/articles`) // Gunakan API_BASE_URL
       .then(res => {
         setArticles(res.data);
@@ -31,6 +29,20 @@ export default function KelolaArtikel() {
         setLoading(false); // Selesai loading (dengan error)
         setArticles([]); // Kosongkan artikel jika ada error
       });
+  };
+
+  // --- NEW: Fungsi untuk menangani penghapusan artikel ---
+  const handleDeleteArticle = async (id) => {
+    if (window.confirm("Apakah Anda yakin ingin menghapus artikel ini?")) {
+      try {
+        await axios.delete(`${API_BASE_URL}/api/articles/${id}`);
+        alert("Artikel berhasil dihapus!");
+        fetchArticles(); // Refresh daftar artikel setelah penghapusan
+      } catch (err) {
+        console.error("Error deleting article:", err);
+        alert("Gagal menghapus artikel: " + (err.response?.data?.message || err.message));
+      }
+    }
   };
 
   return (
@@ -88,7 +100,6 @@ export default function KelolaArtikel() {
               >
                 {artikel.gambar_artikel && (
                   <img
-                    // INI KUNCI PERBAIKANNYA: Menambahkan API_BASE_URL
                     src={`${API_BASE_URL}${artikel.gambar_artikel}`}
                     alt={artikel.judul_artikel}
                     style={{
@@ -108,22 +119,42 @@ export default function KelolaArtikel() {
                   <div style={{ fontSize: 13, color: "#888", marginBottom: 12 }}>
                     Author: {artikel.nama_author}
                   </div>
-                  <button
-                    style={{
-                      background: "#33693C",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: 6,
-                      padding: "8px 0",
-                      fontWeight: 500,
-                      fontSize: 15,
-                      cursor: "pointer",
-                      width: "100%"
-                    }}
-                    onClick={() => navigate(`/detail-artikel/${artikel.id}`)}
-                  >
-                    Detail
-                  </button>
+                  <div style={{ display: "flex", gap: 10, marginTop: "auto" }}> {/* Container untuk tombol */}
+                    {/* --- MODIFIED: Tombol Kelola (Edit) --- */}
+                    <button
+                      style={{
+                        background: "#007bff", // Warna biru untuk edit
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 6,
+                        padding: "8px 0",
+                        fontWeight: 500,
+                        fontSize: 15,
+                        cursor: "pointer",
+                        flex: 1 // Agar tombol mengisi ruang yang tersedia
+                      }}
+                      onClick={() => navigate(`/edit-artikel/${artikel.id}`)}
+                    >
+                      Kelola
+                    </button>
+                    {/* --- NEW: Tombol Delete --- */}
+                    <button
+                      style={{
+                        background: "#dc3545", // Warna merah untuk delete
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 6,
+                        padding: "8px 0",
+                        fontWeight: 500,
+                        fontSize: 15,
+                        cursor: "pointer",
+                        flex: 1
+                      }}
+                      onClick={() => handleDeleteArticle(artikel.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

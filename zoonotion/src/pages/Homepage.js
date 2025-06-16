@@ -11,7 +11,9 @@ function Homepage() {
       </div>
 
       <Container className="text-center mt-5">
-        <h2 className="mb-3 fw-bold">Zoonotion</h2>
+        <h1 className="text-center mb-5 zoo-main-title">
+          Zoonotion
+        </h1>
         <p className="lead w-75 mx-auto">
           Zoonotion adalah platform edukasi hewan yang menyajikan metode pembelajaran hewan yang menarik. Ayooo teman teman mari kita bersama-sama mengenal berbagai macam satwa yang ada di alam yang luas ini 🙌
         </p>
@@ -24,7 +26,7 @@ function Homepage() {
             { to: '/education', img: 'gambarEdukasi.png', label: 'Education' },
             { to: '#', img: 'gambarQuizz.png', label: 'Quizz' },
             { to: '/community', img: 'gambarKomunitas.png', label: 'Komunitas' },
-            { to: '/article', img: 'gambarArtikel.png', label: 'Berita' },
+            { to: '/article', img: 'gambarArtikel.png', label: 'Artikel' },
           ].map((item, index) => (
             <Col xs={6} md={3} key={index}>
               <Link to={item.to} className="text-decoration-none text-dark">

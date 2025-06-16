@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Container, Form, Button, Alert, Spinner } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 function ManajemenZoo() {
   // State untuk data form
@@ -15,6 +16,8 @@ function ManajemenZoo() {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+
+  const navigate = useNavigate();
 
   // Handle perubahan file gambar
   const handleGambarZooChange = (e) => {
@@ -50,14 +53,16 @@ function ManajemenZoo() {
           "Content-Type": "multipart/form-data", // Penting untuk FormData
         },
       });
-      setSuccessMessage(response.data.message); // Ambil pesan sukses dari backend
-      // Reset form setelah berhasil
+      setSuccessMessage(response.data.message); 
+
       setNamaKebunBinatang("");
       setDeskripsiKebunBinatang("");
       setLinkWebResmi("");
       setLinkTiket("");
       setGambarZoo(null);
       setGambarZooPreview(null);
+
+      navigate("/admin/kelolaZoo");
     } catch (error) {
       console.error("Error adding zoo:", error.response ? error.response.data : error.message);
       setErrorMessage(

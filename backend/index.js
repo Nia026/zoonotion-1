@@ -7,6 +7,7 @@ const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 const multer = require("multer");
 const nodemailer = require("nodemailer");
+const fs = require("fs");
 
 const prisma = new PrismaClient();
 const app = express();
@@ -166,7 +167,7 @@ app.get('/api/articles', async (req, res) => {
 
 app.get('/api/articles/:id', async (req, res) => {
   try {
-    const articleId = parseInt(req.params.id); // Prisma membutuhkan ID sebagai integer
+    const articleId = parseInt(req.params.id); 
 
     // Mencari artikel berdasarkan ID
     const article = await prisma.articles.findUnique({
@@ -203,7 +204,7 @@ app.post('/api/articles', upload.single('gambar_artikel'),async (req, res) => {
     const { judul_artikel, isi_artikel, nama_author } = req.body;
     let gambar_artikel_path = null;
     if (req.file) {
-      gambar_artikel_path = `/uploads/${req.file.filename}`; // Menyimpan path relatif
+      gambar_artikel_path = `/uploads/${req.file.filename}`;
     }
     const artikel = await prisma.articles.create({
       data: { judul_artikel, 
@@ -216,7 +217,94 @@ app.post('/api/articles', upload.single('gambar_artikel'),async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-}); 
+});
+
+app.put('/api/articles/:id', upload.single('gambar_artikel'), async (req, res) => {
+  try {
+    const articleId = parseInt(req.params.id);
+    const { judul_artikel, isi_artikel, nama_author } = req.body;
+    let gambar_artikel_path = null;
+
+    const existingArticle = await prisma.articles.findUnique({
+      where: { id: articleId },
+      select: { gambar_artikel: true }
+    });
+
+    if (!existingArticle) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+
+    // Cek apakah ada file gambar baru diupload
+    if (req.file) {
+      gambar_artikel_path = `/uploads/${req.file.filename}`;
+      // Hapus gambar lama jika ada dan bukan gambar default atau placeholder
+      if (existingArticle.gambar_artikel && existingArticle.gambar_artikel.startsWith('/uploads/')) {
+        const oldImagePath = path.join(__dirname, existingArticle.gambar_artikel);
+        fs.unlink(oldImagePath, (err) => {
+          if (err) console.error('Error deleting old image:', err);
+        });
+      }
+    } else {
+      // Jika tidak ada file baru diupload, pertahankan gambar yang sudah ada
+      gambar_artikel_path = existingArticle.gambar_artikel;
+    }
+
+    const updatedArticle = await prisma.articles.update({
+      where: {
+        id: articleId,
+      },
+      data: {
+        judul_artikel,
+        isi_artikel,
+        nama_author,
+        gambar_artikel: gambar_artikel_path,
+      },
+    });
+
+    res.json(updatedArticle);
+  } catch (err) {
+    console.error('Error updating article:', err);
+    res.status(500).json({ message: 'Error updating article', error: err.message });
+  }
+});
+
+app.delete('/api/articles/:id', async (req, res) => {
+  try {
+    const articleId = parseInt(req.params.id);
+
+    // Cari artikel yang akan dihapus untuk mendapatkan path gambar
+    const existingArticle = await prisma.articles.findUnique({
+      where: { id: articleId },
+      select: { gambar_artikel: true }
+    });
+
+    if (!existingArticle) {
+      return res.status(404).json({ message: 'Article not found' });
+    }
+
+    // Hapus artikel dari database
+    await prisma.articles.delete({
+      where: {
+        id: articleId,
+      },
+    });
+
+    // Hapus file gambar terkait dari server jika ada dan merupakan file yang diupload
+    if (existingArticle.gambar_artikel && existingArticle.gambar_artikel.startsWith('/uploads/')) {
+      const imagePath = path.join(__dirname, existingArticle.gambar_artikel);
+      fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error('Error deleting associated image file:', err);
+        }
+      });
+    }
+
+    res.status(200).json({ message: 'Article deleted successfully' }); // Menggunakan status 200 OK
+  } catch (err) {
+    console.error('Error deleting article:', err);
+    res.status(500).json({ message: 'Error deleting article', error: err.message });
+  }
+});
 
 // === ADMINS ===
 app.get('/api/admins', async (req, res) => {
@@ -237,6 +325,24 @@ app.get('/api/communities', async (req, res) => {
     res.json(communities);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+app.get('/api/communities/:id', async (req, res) => {
+  try {
+    const communityId = parseInt(req.params.id);
+    const community = await prisma.communities.findUnique({
+      where: { id: communityId },
+      include: { galleries: true }, // Sertakan data galeri
+    });
+
+    if (!community) {
+      return res.status(404).json({ message: 'Komunitas tidak ditemukan.' });
+    }
+    res.json(community);
+  } catch (err) {
+    console.error('Error fetching community by ID:', err);
+    res.status(500).json({ message: 'Terjadi kesalahan saat mengambil data komunitas.', error: err.message });
   }
 });
 
@@ -293,6 +399,140 @@ app.post('/api/communities/:id/galleries', upload.array("gambar_galeri", 10), as
   }
 });
 
+app.put('/api/communities/:id', upload.single('banner_komunitas'), async (req, res) => {
+  try {
+    const communityId = parseInt(req.params.id);
+    const { nama_komunitas, deskripsi_komunitas, nama_penyelenggara, tahun_penyelenggara } = req.body;
+    let banner_komunitas_path = null;
+
+    const existingCommunity = await prisma.communities.findUnique({
+      where: { id: communityId },
+      select: { banner_komunitas: true }
+    });
+
+    if (!existingCommunity) {
+      return res.status(404).json({ message: 'Komunitas tidak ditemukan.' });
+    }
+
+    // Cek apakah ada file banner baru diupload
+    if (req.file) {
+      banner_komunitas_path = `/uploads/${req.file.filename}`;
+      // Hapus banner lama jika ada dan merupakan file yang diupload
+      if (existingCommunity.banner_komunitas && existingCommunity.banner_komunitas.startsWith('/uploads/')) {
+        const oldBannerPath = path.join(__dirname, existingCommunity.banner_komunitas);
+        fs.unlink(oldBannerPath, (err) => {
+          if (err) console.error('Error deleting old community banner:', err);
+        });
+      }
+    } else {
+      // Jika tidak ada file baru diupload, pertahankan banner yang sudah ada
+      banner_komunitas_path = existingCommunity.banner_komunitas;
+    }
+
+    const updatedCommunity = await prisma.communities.update({
+      where: { id: communityId },
+      data: {
+        nama_komunitas,
+        deskripsi_komunitas,
+        nama_penyelenggara,
+        tahun_penyelenggara: tahun_penyelenggara ? Number(tahun_penyelenggara) : null,
+        banner_komunitas: banner_komunitas_path,
+      },
+    });
+    res.json(updatedCommunity);
+  } catch (error) {
+    console.error('Error updating community:', error);
+    res.status(500).json({ message: 'Terjadi kesalahan saat memperbarui komunitas.', error: error.message });
+  }
+});
+
+app.put('/api/galleries/:galleryId', async (req, res) => {
+  try {
+    const galleryId = parseInt(req.params.galleryId);
+    const { deskripsi_gambar } = req.body;
+
+    const updatedGallery = await prisma.galleries.update({
+      where: { id: galleryId },
+      data: { deskripsi_gambar: deskripsi_gambar || null },
+    });
+    res.json(updatedGallery);
+  } catch (err) {
+    console.error('Error updating gallery item:', err);
+    res.status(500).json({ message: 'Gagal memperbarui item galeri.', error: err.message });
+  }
+});
+
+app.delete('/api/galleries/:galleryId', async (req, res) => {
+  try {
+    const galleryId = parseInt(req.params.galleryId);
+
+    const existingGallery = await prisma.galleries.findUnique({
+      where: { id: galleryId },
+      select: { gambar_galeri: true }
+    });
+
+    if (!existingGallery) {
+      return res.status(404).json({ message: 'Item galeri tidak ditemukan.' });
+    }
+
+    await prisma.galleries.delete({
+      where: { id: galleryId },
+    });
+
+    // Hapus file gambar dari server
+    if (existingGallery.gambar_galeri && existingGallery.gambar_galeri.startsWith('/uploads/')) {
+      const imagePath = path.join(__dirname, existingGallery.gambar_galeri);
+      fs.unlink(imagePath, (err) => {
+        if (err) console.error('Error deleting gallery image file:', err);
+      });
+    }
+
+    res.status(200).json({ message: 'Item galeri berhasil dihapus.' });
+  } catch (err) {
+    console.error('Error deleting gallery item:', err);
+    res.status(500).json({ message: 'Gagal menghapus item galeri.', error: err.message });
+  }
+});
+
+app.delete('/api/communities/:id', async (req, res) => {
+  try {
+    const communityId = parseInt(req.params.id);
+
+    const communityToDelete = await prisma.communities.findUnique({
+      where: { id: communityId },
+      include: { galleries: true }
+    });
+
+    if (!communityToDelete) {
+      return res.status(404).json({ message: 'Komunitas tidak ditemukan.' });
+    }
+
+    for (const galleryItem of communityToDelete.galleries) {
+      if (galleryItem.gambar_galeri && galleryItem.gambar_galeri.startsWith('/uploads/')) {
+        const imagePath = path.join(__dirname, galleryItem.gambar_galeri);
+        fs.unlink(imagePath, (err) => {
+          if (err) console.error('Error deleting gallery image for community:', err);
+        });
+      }
+    }
+
+    if (communityToDelete.banner_komunitas && communityToDelete.banner_komunitas.startsWith('/uploads/')) {
+      const bannerPath = path.join(__dirname, communityToDelete.banner_komunitas);
+      fs.unlink(bannerPath, (err) => {
+        if (err) console.error('Error deleting community banner:', err);
+      });
+    }
+
+    await prisma.communities.delete({
+      where: { id: communityId },
+    });
+
+    res.status(200).json({ message: 'Komunitas dan semua galerinya berhasil dihapus!' });
+  } catch (err) {
+    console.error('Error deleting community:', err);
+    res.status(500).json({ message: 'Terjadi kesalahan saat menghapus komunitas.', error: err.message });
+  }
+});
 
 // === EDUCATIONS ===
 app.get('/api/educations', async (req, res) => {
@@ -301,6 +541,35 @@ app.get('/api/educations', async (req, res) => {
     res.json(educations);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+app.get('/api/educations/:id', async (req, res) => {
+  try {
+    const educationId = parseInt(req.params.id);
+
+    const education = await prisma.educations.findUnique({
+      where: {
+        id: educationId,
+      },
+      select: {
+        id: true,
+        nama_hewan: true,
+        kategori_hewan: true,
+        deskripsi_hewan: true,
+        gambar_hewan: true,
+        created_at: true,
+      },
+    });
+
+    if (!education) {
+      return res.status(404).json({ message: 'Education not found' });
+    }
+
+    res.json(education);
+  } catch (err) {
+    console.error('Error fetching education by ID:', err);
+    res.status(500).json({ message: 'Error fetching education', error: err.message });
   }
 });
 
@@ -347,6 +616,94 @@ app.post('/api/galleries', upload.array('images'), async (req, res) => {
   }
 });
 
+app.put('/api/educations/:id', upload.single("gambar_hewan"), async (req, res) => {
+  try {
+    const educationId = parseInt(req.params.id);
+    const { nama_hewan, kategori_hewan, deskripsi_hewan } = req.body;
+    let gambar_hewan_path = null;
+
+    // Cari edukasi yang akan diupdate untuk mendapatkan path gambar lama
+    const existingEducation = await prisma.educations.findUnique({
+      where: { id: educationId },
+      select: { gambar_hewan: true }
+    });
+
+    if (!existingEducation) {
+      return res.status(404).json({ message: 'Education not found' });
+    }
+
+    // Cek apakah ada file gambar baru diupload
+    if (req.file) {
+      gambar_hewan_path = `/uploads/${req.file.filename}`;
+      // Hapus gambar lama jika ada dan merupakan file yang diupload
+      if (existingEducation.gambar_hewan && existingEducation.gambar_hewan.startsWith('/uploads/')) {
+        const oldImagePath = path.join(__dirname, existingEducation.gambar_hewan);
+        fs.unlink(oldImagePath, (err) => {
+          if (err) console.error('Error deleting old image for education:', err);
+        });
+      }
+    } else {
+      // Jika tidak ada file baru diupload, pertahankan gambar yang sudah ada
+      gambar_hewan_path = existingEducation.gambar_hewan;
+    }
+
+    const updatedEducation = await prisma.educations.update({
+      where: {
+        id: educationId,
+      },
+      data: {
+        nama_hewan,
+        kategori_hewan,
+        deskripsi_hewan,
+        gambar_hewan: gambar_hewan_path,
+      },
+    });
+
+    res.json(updatedEducation);
+  } catch (err) {
+    console.error('Error updating education:', err);
+    res.status(500).json({ message: 'Error updating education', error: err.message });
+  }
+});
+
+app.delete('/api/educations/:id', async (req, res) => {
+  try {
+    const educationId = parseInt(req.params.id);
+
+    // Cari edukasi yang akan dihapus untuk mendapatkan path gambar
+    const existingEducation = await prisma.educations.findUnique({
+      where: { id: educationId },
+      select: { gambar_hewan: true }
+    });
+
+    if (!existingEducation) {
+      return res.status(404).json({ message: 'Education not found' });
+    }
+
+    // Hapus edukasi dari database
+    await prisma.educations.delete({
+      where: {
+        id: educationId,
+      },
+    });
+
+    // Hapus file gambar terkait dari server jika ada dan merupakan file yang diupload
+    if (existingEducation.gambar_hewan && existingEducation.gambar_hewan.startsWith('/uploads/')) {
+      const imagePath = path.join(__dirname, existingEducation.gambar_hewan);
+      fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error('Error deleting associated image file for education:', err);
+        }
+      });
+    }
+
+    res.status(200).json({ message: 'Education deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting education:', err);
+    res.status(500).json({ message: 'Error deleting education', error: err.message });
+  }
+});
+
 // === ZOOS ===
 app.get('/api/zoos', async (req, res) => {
   try {
@@ -354,6 +711,37 @@ app.get('/api/zoos', async (req, res) => {
     res.json(zoos);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+app.get('/api/zoos/:id', async (req, res) => {
+  try {
+    const zooId = parseInt(req.params.id);
+
+    const zoo = await prisma.zoos.findUnique({
+      where: {
+        id: zooId,
+      },
+      select: { 
+        id: true,
+        nama_kebun_binatang: true,
+        deskripsi_kebun_binatang: true,
+        link_web_resmi: true,
+        link_tiket: true,
+        gambar_zoo: true,
+        created_at: true,
+        // updated_at: true, 
+      },
+    });
+
+    if (!zoo) {
+      return res.status(404).json({ message: 'Kebun binatang tidak ditemukan.' });
+    }
+
+    res.json(zoo);
+  } catch (err) {
+    console.error('Error fetching zoo by ID:', err);
+    res.status(500).json({ message: 'Terjadi kesalahan saat mengambil data kebun binatang.', error: err.message });
   }
 });
 
@@ -387,6 +775,104 @@ app.post('/api/zoos', upload.single('gambar_zoo'), async (req, res) => {
           return res.status(409).json({ message: 'Nama kebun binatang sudah ada.' });
       }
       res.status(500).json({ message: 'Terjadi kesalahan saat menambahkan kebun binatang.', error: error.message });
+  }
+});
+
+app.put('/api/zoos/:id', upload.single('gambar_zoo'), async (req, res) => {
+  try {
+    const zooId = parseInt(req.params.id);
+    const { nama_kebun_binatang, deskripsi_kebun_binatang, link_web_resmi, link_tiket } = req.body;
+    let gambar_zoo_path = null;
+
+    // Cari kebun binatang yang akan diupdate untuk mendapatkan path gambar lama
+    const existingZoo = await prisma.zoos.findUnique({
+      where: { id: zooId },
+      select: { gambar_zoo: true }
+    });
+
+    if (!existingZoo) {
+      return res.status(404).json({ message: 'Kebun binatang tidak ditemukan.' });
+    }
+
+    // Cek apakah ada file gambar baru diupload
+    if (req.file) {
+      gambar_zoo_path = `/uploads/${req.file.filename}`;
+      // Hapus gambar lama jika ada dan merupakan file yang diupload
+      if (existingZoo.gambar_zoo && existingZoo.gambar_zoo.startsWith('/uploads/')) {
+        const oldImagePath = path.join(__dirname, existingZoo.gambar_zoo);
+        fs.unlink(oldImagePath, (err) => {
+          if (err) console.error('Error deleting old image for zoo:', err);
+        });
+      }
+    } else {
+      // Jika tidak ada file baru diupload, pertahankan gambar yang sudah ada
+      gambar_zoo_path = existingZoo.gambar_zoo;
+    }
+
+    // Validasi input
+    if (!nama_kebun_binatang) {
+        return res.status(400).json({ message: 'Nama kebun binatang wajib diisi.' });
+    }
+
+    const updatedZoo = await prisma.zoos.update({
+      where: {
+        id: zooId,
+      },
+      data: {
+        nama_kebun_binatang,
+        deskripsi_kebun_binatang,
+        link_web_resmi,
+        link_tiket,
+        gambar_zoo: gambar_zoo_path,
+      },
+    });
+
+    res.json(updatedZoo);
+  } catch (error) {
+    console.error('Error updating zoo:', error);
+    // Tangani error jika nama kebun binatang sudah ada (unique constraint)
+    if (error.code === 'P2002' && error.meta?.target?.includes('nama_kebun_binatang')) {
+        return res.status(409).json({ message: 'Nama kebun binatang sudah ada.' });
+    }
+    res.status(500).json({ message: 'Terjadi kesalahan saat memperbarui kebun binatang.', error: error.message });
+  }
+});
+
+app.delete('/api/zoos/:id', async (req, res) => {
+  try {
+    const zooId = parseInt(req.params.id);
+
+    // Cari kebun binatang yang akan dihapus untuk mendapatkan path gambar
+    const existingZoo = await prisma.zoos.findUnique({
+      where: { id: zooId },
+      select: { gambar_zoo: true }
+    });
+
+    if (!existingZoo) {
+      return res.status(404).json({ message: 'Kebun binatang tidak ditemukan.' });
+    }
+
+    // Hapus kebun binatang dari database
+    await prisma.zoos.delete({
+      where: {
+        id: zooId,
+      },
+    });
+
+    // Hapus file gambar terkait dari server jika ada dan merupakan file yang diupload
+    if (existingZoo.gambar_zoo && existingZoo.gambar_zoo.startsWith('/uploads/')) {
+      const imagePath = path.join(__dirname, existingZoo.gambar_zoo);
+      fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error('Error deleting associated image file for zoo:', err);
+        }
+      });
+    }
+
+    res.status(200).json({ message: 'Kebun binatang berhasil dihapus!' });
+  } catch (err) {
+    console.error('Error deleting zoo:', err);
+    res.status(500).json({ message: 'Terjadi kesalahan saat menghapus kebun binatang.', error: err.message });
   }
 });
 

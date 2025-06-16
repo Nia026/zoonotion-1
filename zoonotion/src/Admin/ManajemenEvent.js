@@ -2,34 +2,56 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Spinner, Alert } from "react-bootstrap"; // Import Bootstrap components for better loading/error states
+
+const API_BASE_URL = "http://localhost:5000"; // Define your API base URL
 
 export default function ManajemenEvent() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // Add error state
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchEvents();
   }, []);
 
-  // Ambil data dari tabel communities (karena event = communities)
-  const fetchEvents = () => {
+  const fetchEvents = async () => { // Make it async
     setLoading(true);
-    axios.get("http://localhost:5000/api/communities")
-      .then(res => {
-        setEvents(res.data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    setError(null); // Clear previous errors
+    try {
+      const res = await axios.get(`${API_BASE_URL}/api/communities`);
+      setEvents(res.data);
+    } catch (err) {
+      console.error("Error fetching events:", err);
+      setError("Gagal memuat data event. Pastikan server backend berjalan.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteEvent = async (eventId) => {
+    if (window.confirm("Apakah Anda yakin ingin menghapus event ini beserta semua galerinya?")) {
+      try {
+        await axios.delete(`${API_BASE_URL}/api/communities/${eventId}`);
+        alert("Event dan galerinya berhasil dihapus!");
+        fetchEvents(); // Refresh the list after deletion
+      } catch (err) {
+        console.error("Error deleting event:", err);
+        setError("Gagal menghapus event: " + (err.response?.data?.message || err.message));
+        setTimeout(() => setError(null), 5000); // Clear error after 5 seconds
+      }
+    }
   };
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "#F4F6F8" }}>
+      {/* <Sidebar />  Uncomment if you are using a sidebar component */}
       <main style={{ flex: 1, padding: "40px 5vw" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
           <h1 style={{ fontSize: 28, fontWeight: 700, color: "#222" }}>Manajemen Event</h1>
           <button
-            onClick={() => navigate("/tambah-event")}
+            onClick={() => navigate("/tambah-event")} // Adjusted path for clarity
             style={{
               background: "#33693C",
               color: "#fff",
@@ -46,13 +68,20 @@ export default function ManajemenEvent() {
           </button>
         </div>
 
+        {error && <Alert variant="danger" className="mb-4">{error}</Alert>} {/* Display error */}
+
         {loading ? (
-          <div>Loading...</div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+            <Spinner animation="border" role="status" variant="success">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+            <p className="ms-2 text-success">Memuat data event...</p>
+          </div>
         ) : events.length === 0 ? (
-          <div style={{ color: "#888", fontSize: 18 }}>Belum ada data event.</div>
+          <div style={{ color: "#888", fontSize: 18, textAlign: "center", marginTop: "50px" }}>Belum ada data event.</div>
         ) : (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 32 }}>
-            {events.map((event, i) => (
+            {events.map((event) => (
               <div
                 key={event.id}
                 style={{
@@ -67,7 +96,7 @@ export default function ManajemenEvent() {
                 }}
               >
                 <img
-                  src={event.banner_komunitas ? (event.banner_komunitas.startsWith("http") ? event.banner_komunitas : `http://localhost:5000${event.banner_komunitas}`) : "/images/default-event.jpg"}
+                  src={event.banner_komunitas ? (event.banner_komunitas.startsWith("http") ? event.banner_komunitas : `${API_BASE_URL}${event.banner_komunitas}`) : "/images/default-event.jpg"}
                   alt={event.nama_komunitas}
                   style={{
                     width: "100%",
@@ -88,21 +117,40 @@ export default function ManajemenEvent() {
                   <p style={{ fontSize: 14, color: "#444", marginBottom: 16, flex: 1 }}>
                     {event.deskripsi_komunitas ? event.deskripsi_komunitas.substring(0, 100) + "..." : "-"}
                   </p>
-                  <button
-                    style={{
-                      background: "#33693C",
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: 6,
-                      padding: "8px 0",
-                      fontWeight: 500,
-                      fontSize: 15,
-                      cursor: "pointer",
-                      width: "100%"
-                    }}
-                  >
-                    Kelola
-                  </button>
+                  <div style={{ display: "flex", gap: "10px", marginTop: "auto" }}> {/* Use flexbox for buttons */}
+                    <button
+                      onClick={() => navigate(`/edit-event/${event.id}`)} // Navigate to edit page
+                      style={{
+                        background: "#007bff", // Blue color for kelola
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 6,
+                        padding: "8px 0",
+                        fontWeight: 500,
+                        fontSize: 15,
+                        cursor: "pointer",
+                        flex: 1 // Make buttons take equal width
+                      }}
+                    >
+                      Kelola
+                    </button>
+                    <button
+                      onClick={() => handleDeleteEvent(event.id)}
+                      style={{
+                        background: "#dc3545", // Red color for delete
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 6,
+                        padding: "8px 0",
+                        fontWeight: 500,
+                        fontSize: 15,
+                        cursor: "pointer",
+                        flex: 1 // Make buttons take equal width
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

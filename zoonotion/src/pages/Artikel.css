@@ -1,118 +1,64 @@
-.article-page {
-  background-color: #a2845e;
-  /* Warna background cokelat */
-  padding-bottom: 50px;
+.article-page{
+  /* background-color: #F4F6F8; */
+  background-image: url('/public/assets/Background2.png');
+  min-height: 100vh;
 }
 
-.article-banner-container {
-  position: relative;
-  width: 100%;
-  height: 65vh;
-  overflow: hidden;
-  margin-bottom: 51px;
+.bg-dark-green {
+  background-color: #1e3d2f;
+  /* hijau gelap */
 }
 
-.article-banner-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.article-banner-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  /* Warna teks banner */
-  font-size: 64px;
-  /* Ukuran font banner */
-  font-family: 'Poppins', sans-serif;
-  /* Pastikan font Poppins tersedia atau ganti */
-  font-weight: 600;
-  text-align: center;
-  width: 80%;
-  /* Agar teks tidak terlalu lebar di layar besar */
-}
-
-.section-title {
-  color: white;
-  /* Warna judul bagian */
-  font-size: 36px;
-  /* Ukuran font judul */
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-}
-
-.article-card {
-  background-color: #214b26 !important;
-  /* Warna card hijau tua */
-  border-radius: 10px;
-  max-width: 524px;
-  /* Lebar maksimum card sesuai desain */
-}
-
-.article-image {
-  height: 250px;
-  /* Tinggi gambar sesuai desain */
+.custom-article-card .article-thumbnail {
+  height: 180px;
   object-fit: cover;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
 
-.article-card .card-title {
-  font-size: 20px;
-  font-weight: 500;
+.custom-article-card .card-body {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
-.article-card .card-text {
-  font-size: 12px;
-  font-weight: 500;
+.custom-article-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Style untuk tombol Lihat Selengkapnya */
-.custom-button.read-more-button {
-  background-color: white;
-  /* Warna background tombol */
-  color: #214b26;
-  /* Warna teks tombol */
+.custom-article-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.custom-article-card .btn {
+  background-color: #fff;
+  color: #1e3d2f;
   border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 11px 13px;
-  /* Sesuaikan padding */
-  border-radius: 20px;
-  /* Border radius sesuai desain */
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-  font-size: 12px;
-  /* Sesuaikan ukuran font */
-  text-decoration: none !important;
-  /* Hilangkan garis bawah link */
-  transition: background-color 0.3s ease;
-  width: fit-content;
-  /* Agar tombol sesuai dengan konten */
+  transition: 0.3s ease-in-out;
 }
 
-.custom-button.read-more-button:hover {
-  background-color: #e0dede;
-  /* Efek hover */
+.custom-article-card .btn:hover {
+  background-color: #dbe8dc;
+  color: #1e3d2f;
 }
 
-/* Style untuk ikon panah */
-.arrow-icon {
-  margin-left: 8px;
-  margin-right: 8px;
-  font-size: 16px;
+/* detail artikel */
+
+.article-detail-wrapper {
+  /* background-color: #F4F6F8; */
+  background-image: url('/public/assets/Background2.png');
+  min-height: 100vh;
 }
 
-.bg-brown-light {
-  background-color: #a2845e;
-  /* Warna background cokelat muda */
+.article-card-custom {
+  transition: box-shadow 0.3s ease;
 }
 
-.bg-green-dark {
-  background-color: #214b26;
-  /* Warna background hijau tua */
+.article-card-custom:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.article-body p {
+  margin-bottom: 1rem;
+  text-align: justify;
 }

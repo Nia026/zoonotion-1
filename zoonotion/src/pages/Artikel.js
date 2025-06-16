@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { FiArrowRight } from 'react-icons/fi'; 
-import axios from 'axios'; 
-
+import axios from 'axios';
 import './Artikel.css';
 
 const API_BASE_URL = "http://localhost:5000";
@@ -25,7 +23,7 @@ function Artikel() {
       const formattedArticles = response.data.map(article => ({
         id: article.id,
         title: article.judul_artikel,
-        imageUrl: `${API_BASE_URL}${article.gambar_artikel}`, 
+        imageUrl: `${API_BASE_URL}${article.gambar_artikel}`,
         description: article.isi_artikel,
       }));
       setArticleList(formattedArticles);
@@ -39,13 +37,10 @@ function Artikel() {
 
   return (
     <div className="article-page">
-      <div className="article-banner-container">
-        <img src={`${process.env.PUBLIC_URL}/assets/bannerKupu.png`} alt="Halaman Artikel" className="article-banner-image" />
-        <h2 className="article-banner-text">Halaman Artikel</h2>
-      </div>
-
       <Container className="py-5">
-        <h2 className="text-center mb-4 section-title">Daftar Artikel</h2>
+        <h1 className="text-center mb-5 zoo-main-title">
+            Halaman Artikel 
+        </h1>
         <Row className="justify-content-center">
           {loading ? (
             <Col md={12} className="text-center py-5">
@@ -60,20 +55,28 @@ function Artikel() {
             </Col>
           ) : articleList.length > 0 ? (
             articleList.map((article) => (
-              <Col md={6} className="mb-4" key={article.id}>
-                <Card className="article-card bg-green-dark text-white shadow">
-                  <Card.Img variant="top" src={article.imageUrl} alt={article.title} className="article-image" />
-                  <Card.Body className="d-flex flex-column align-items-center">
-                    <Card.Title className="text-center mb-3">{article.title}</Card.Title>
-                    <Card.Text className="text-center mb-3">{article.description.substring(0, 150)}...</Card.Text>
+              <Col md={4} className="mb-4" key={article.id}>
+                <Card className="custom-article-card h-100 shadow border-0">
+                  <Card.Img
+                    variant="top"
+                    src={article.imageUrl}
+                    alt={article.title}
+                    className="article-thumbnail"
+                  />
+                  <Card.Body className="bg-dark-green text-white d-flex flex-column justify-content-between">
+                    <div>
+                      <Card.Title className="fw-semibold">{article.title}</Card.Title>
+                      <Card.Text className="mb-3">
+                        {article.description.substring(0, 70)}...
+                      </Card.Text>
+                    </div>
                     <Button
-                      variant="outline-light"
-                      size="sm"
+                      variant="light"
                       as={Link}
                       to={`/detail-artikel/${article.id}`}
-                      className="custom-button read-more-button"
+                      className="fw-semibold"
                     >
-                      Lihat Selengkapnya <FiArrowRight className="arrow-icon" />
+                      Detail Artikel
                     </Button>
                   </Card.Body>
                 </Card>

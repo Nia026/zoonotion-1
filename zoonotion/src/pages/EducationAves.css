@@ -1,452 +1,157 @@
-
+/* EDUCATION AVES SIMPLIFIED CSS */
 .education-category-page {
-  background-color: #f0f4f8;
-  /* Latar belakang halaman yang lebih lembut */
+  background-color: #f9fafb;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
 /* Header Section */
-.category-header-bg {
+.main-header{
+  background-image: url('/public/assets/backgroundDetailAnimals.png'); 
   background-size: cover;
-  background-position: center center;
-  position: relative;
-  padding: 100px 0;
-  display: flex;
-  align-items: center;
-  min-height: 400px;
-  border-bottom-left-radius: 50px;
-  border-bottom-right-radius: 50px;
-  overflow: hidden;
-  margin-bottom: 30px;
-}
-
-.header-aves-bg {
-  /* PATH YANG DIPERBAIKI */
-  background-image: url('/public/assets/bannerEdukasi.png');
-  /* Ganti dengan path gambar hutan Anda*/
-}
-
-.header-reptil-bg {
-  /* PATH YANG DIPERBAIKI */
-  background-image: url('/public/assets/bannerEdukasi.png');
-  /* Anda perlu menyiapkan gambar ini */
-}
-
-.header-amfibi-bg {
-  background-image: url('/public/assets/bannerEdukasi.png');
-  /* Buat gambar spesifik jika ada */
-}
-
-.header-pisces-bg {
-  background-image: url('/public/assets/bannerEdukasi.png');
-  /* Buat gambar spesifik jika ada */
-}
-
-.header-mamalia-bg {
-  background-image: url('/public/assets/bannerEdukasi.png'); 
-  /* Buat gambar spesifik jika ada */
-}
-
-.category-header-bg .overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
+  background-position: center;
+  background-repeat: no-repeat;
   width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-  /* Overlay sedikit lebih gelap */
-}
-
-.header-content {
-  z-index: 1;
-}
-
-.category-title {
-  color: #fff;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
-  /* Shadow lebih kuat */
-  letter-spacing: 2px;
-  font-size: 3.8rem;
-  /* Ukuran font lebih besar */
-}
-
-/* Category Explanation Card (Kard "Penjelasan Aves/Reptil") */
-.category-explanation-card {
-  background-color: rgba(255, 255, 255, 0.98);
-  /* Lebih solid */
-  border-radius: 20px;
-  /* Sudut lebih bulat */
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  /* Shadow lebih kuat */
-  padding: 20px;
-  max-width: 320px;
-  /* Sedikit lebih lebar */
-  cursor: pointer;
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  border: none;
-  border-top: 5px solid #A2845E;
-  /* Garis atas untuk aksen */
-}
-
-.category-explanation-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  /* Efek hover lebih menonjol */
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-}
-
-.category-general-img {
-  width: 120px;
-  /* Ukuran gambar di kartu penjelasan kategori */
-  height: 120px;
-  object-fit: contain;
-  margin-bottom: 15px;
-}
-
-.category-name {
-  color: #343a40;
-  font-weight: 700;
-  font-size: 1.3rem;
-}
-
-.learn-more-btn {
-  color: #A2845E !important;
-  font-size: 1.05rem;
-  font-weight: 600;
   display: flex;
-  align-items: center;
-  margin-top: 15px;
+  justify-content: center;
+  padding: 50px 0;
 }
 
-.learn-more-btn .fa-arrow-right {
+.category-header-bg {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 80%;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); */
+  text-align: center;
+  color: white;
+  font-size: 3rem;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+}
+
+.category-header-bg h1 {
+  z-index: 1;
+  margin: 0;
+}
+
+/* Animal Grid */
+.animal-grid-section {
+  padding: 30px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+.animal-card-simple {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 20px;
+  cursor: pointer;
   transition: transform 0.2s ease-in-out;
 }
 
-.learn-more-btn:hover .fa-arrow-right {
-  transform: translateX(5px);
-}
-
-/* Animal Grid Section */
-.animal-grid-section {
-  padding-top: 40px;
-  padding-bottom: 60px;
-}
-
-.animal-card {
-  border-radius: 18px;
-  /* Sudut lebih bulat */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  /* Shadow lebih jelas */
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  cursor: pointer;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  border: none;
-  background-color: #ffffff;
-}
-
-.animal-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+.animal-card-simple:hover {
+  transform: translateY(-5px);
 }
 
 .animal-img {
-  width: 140px;
-  /* Ukuran gambar hewan di kartu lebih besar */
-  height: 140px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #A2845E;
-  /* Border di gambar hewan lebih tebal */
-  padding: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
 }
 
 .animal-name {
+  font-weight: bold;
+  font-size: 1.1rem;
   color: #333;
-  font-weight: 700;
-  margin-top: 15px;
-  font-size: 1.25rem;
-  /* Ukuran nama hewan lebih besar */
 }
 
-.no-data-message {
-  font-size: 1.2rem;
-  color: #6c757d;
-  padding: 30px;
-  background-color: #e9ecef;
-  border-radius: 10px;
-  margin: 40px auto;
-  max-width: 600px;
-}
-
-/* General Modal Styling */
+/* Modal */
 .modal-header-custom {
-  position: relative;
-  overflow: hidden;
-  border-bottom: none;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-  padding: 25px 20px 50px 20px;
-  /* Padding bawah lebih besar untuk efek melayang */
-}
-
-.modal-header-custom::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  background-image: url('/public/assets/bannerEdukasi.png');
   background-size: cover;
   background-position: center;
-  filter: brightness(0.8);
-  /* Gelapkan sedikit background */
-  z-index: 0;
-}
-
-/* Specific modal backgrounds (using the existing classes) */
-.aves-modal-header {
-  /* PATH YANG DIPERBAIKI */
-  background-image: url('/public/assets/bannerEdukasi.png');
-  /* background-image: url('/public/assets/gambarAves.webp'); */
-}
-
-.reptil-modal-header {
-  /* PATH YANG DIPERBAIKI */
-  background-image: url('/public/assets/bannerEdukasi.png');
-  /* background-image: url('/public/assets/gambarReptil.jpg');  */
-}
-
-.amfibi-modal-header {
-  background-image: url('/public/assets/bannerEdukasi.png');
-  /* Buat gambar spesifik jika ada */
-}
-
-.pisces-modal-header {
-  background-image: url('/public/assets/bannerEdukasi.png');
-  /* Buat gambar spesifik jika ada */
-}
-
-.mamalia-modal-header {
-  background-image: url('/public/assets/bannerEdukasi.png');
-  /* Buat gambar spesifik jika ada */
-}
-
-
-.modal-header-custom .modal-title-custom {
   color: white;
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 1.8rem;
   font-weight: bold;
-  position: relative;
-  z-index: 1;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-}
-
-.modal-header-custom .btn-close {
-  filter: invert(1);
-  z-index: 1;
-  font-size: 1.2rem;
-  opacity: 0.8;
-}
-
-.modal-header-custom .btn-close:hover {
-  opacity: 1;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
 .modal-body-custom {
-  background-color: #ffffff;
-  /* Latar belakang body modal putih */
-  padding: 30px;
+  background-color: #fff;
+  padding: 20px;
+  font-size: 1rem;
+  line-height: 1.6;
   text-align: justify;
-  line-height: 1.7;
-  color: #343a40;
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 
-/* Category Modal Body Specific Styles */
-.category-modal-body {
-  background-color: #f0f8ff;
-  /* Latar belakang lebih terang untuk kategori */
-}
-
-.aves-modal-body {
-  /* Kustomisasi jika perlu */
-}
-
-.reptil-modal-body {
-  /* Kustomisasi jika perlu */
-  background-color: #f5fff0;
-  /* Contoh warna hijau muda untuk reptil */
-}
-
-
+.modal-animal-img,
 .category-modal-img {
   max-width: 200px;
-  /* Gambar di modal kategori lebih besar */
-  height: auto;
-  border-radius: 15px;
-  border: 3px solid #A2845E;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  width: 100%;
+  object-fit: cover;
 }
 
 .modal-animal-name {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: bold;
-  color: #2c3e50;
-  margin-bottom: 15px;
-}
-
-.category-explanation-text {
-  font-size: 1.05rem;
-  line-height: 1.6;
-  color: #444;
-}
-
-.modal-subtitle {
-  font-weight: bold;
-  color: #2c3e50;
-  margin-top: 25px;
   margin-bottom: 10px;
 }
 
 .modal-feature-list {
-  list-style-type: '✔ ';
-  /* Custom bullet point */
   padding-left: 20px;
-  margin-top: 10px;
-}
-
-.modal-feature-list li {
-  margin-bottom: 8px;
-  color: #555;
-}
-
-/* Animal Detail Modal Specific Styles */
-.animal-modal-img {
-  max-width: 280px;
-  /* Gambar di modal detail hewan lebih besar */
-  height: auto;
-  border-radius: 15px;
-  border: 4px solid #A2845E;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-  margin-bottom: 25px;
-}
-
-.animal-description-text {
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: #343a40;
-}
-
-.modal-footer-custom {
-  border-top: none;
-  padding: 15px 30px;
-  background-color: #f8f9fa;
-  /* Latar belakang footer modal */
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
+  list-style: disc;
 }
 
 .btn-close-modal {
-  padding: 8px 25px;
-  border-radius: 8px;
-  font-weight: 600;
   background-color: #6c757d;
-  border-color: #6c757d;
-  transition: all 0.3s ease;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  margin-top: 15px;
 }
 
-.btn-close-modal:hover {
-  background-color: #5a6268;
-  border-color: #545b62;
-}
-
-
-.footer-educations {
-  background: #F4F6F8;
-  color: #6c757d;
-  font-size: 0.9rem;
-  padding: 15px 0;
-  /* Padding footer lebih besar */
-  margin-top: auto;
-  /* Mendorong footer ke bawah */
-}
-
-/* Responsive adjustments */
+/* Responsive */
 @media (max-width: 768px) {
   .category-header-bg {
-    padding: 60px 0;
-    min-height: 250px;
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
-  }
-
-  .category-title {
-    font-size: 2.8rem;
-  }
-
-  .category-explanation-card {
-    max-width: 90%;
-    margin: 0 auto;
-    padding: 10px;
-  }
-
-  .category-general-img {
-    width: 90px;
-    height: 90px;
+    font-size: 2.5rem;
+    padding: 80px 0;
   }
 
   .animal-img {
-    width: 100px;
-    height: 100px;
-  }
-
-  .category-modal-img,
-  .animal-modal-img {
-    max-width: 150px;
-  }
-
-  .modal-body-custom {
-    padding: 20px;
-    font-size: 0.95rem;
-  }
-
-  .modal-title-custom {
-    font-size: 1.5rem;
-  }
-
-  .modal-animal-name {
-    font-size: 1.5rem;
+    width: 80px;
+    height: 80px;
   }
 }
 
 @media (max-width: 576px) {
-  .category-title {
-    font-size: 2.2rem;
+  .category-header-bg {
+    font-size: 2rem;
+    padding: 60px 0;
   }
 
-  .category-explanation-card {
-    padding: 10px;
-  }
-
-  .animal-img {
-    width: 90px;
-    height: 90px;
-  }
-
-  .modal-header-custom {
-    padding-bottom: 40px;
-  }
-
-  .category-modal-img,
-  .animal-modal-img {
-    max-width: 120px;
+  .animal-card {
+    padding: 15px;
   }
 }
