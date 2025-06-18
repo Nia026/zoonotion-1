@@ -105,7 +105,6 @@
 
 .modal-header-custom {
   background: linear-gradient(135deg, #33693C, #49a06d);
-  color: white;
   padding: 18px 24px;
   border-top-left-radius: 0 !important;
   border-top-right-radius: 0 !important;
@@ -118,6 +117,7 @@
 .modal-title-custom {
   font-weight: 700;
   font-size: 22px;
+  color: white;
 }
 
 .modal-header-custom .btn-close {

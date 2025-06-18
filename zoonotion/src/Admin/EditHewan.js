@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Sidebar from "./Sidebar"; // Sesuaikan path jika diperlukan
+import { Container, Button, Form } from "react-bootstrap";
 
 const API_BASE_URL = "http://localhost:5000"; // Pastikan ini sesuai dengan URL backend Anda
 
@@ -98,76 +98,81 @@ export default function EditHewan() {
   }
 
   return (
-    <div style={containerStyle}>
-      {/* Jika Anda memiliki komponen Sidebar, pastikan di sini */}
-      {/* <Sidebar /> */}
-
-      <main style={mainStyle}>
-        <h1 style={headingStyle}>Edit Data Hewan</h1>
-        <div style={formContainerStyle}>
-          <form onSubmit={handleSubmit}>
-            <div style={formGroupStyle}>
-              <label htmlFor="nama_hewan" style={labelStyle}>Nama Hewan:</label>
-              <input
-                type="text"
-                id="nama_hewan"
-                value={nama_hewan}
-                onChange={(e) => setNamaHewan(e.target.value)}
-                required
-                style={inputStyle}
-              />
-            </div>
-            <div style={formGroupStyle}>
-              <label htmlFor="kategori_hewan" style={labelStyle}>Kategori Hewan:</label>
-              <input
-                type="text"
-                id="kategori_hewan"
-                value={kategori_hewan}
-                onChange={(e) => setKategoriHewan(e.target.value)}
-                style={inputStyle}
-              />
-            </div>
-            <div style={formGroupStyle}>
-              <label htmlFor="deskripsi_hewan" style={labelStyle}>Deskripsi Hewan:</label>
-              <textarea
-                id="deskripsi_hewan"
-                value={deskripsi_hewan}
-                onChange={(e) => setDeskripsiHewan(e.target.value)}
-                rows="5"
-                required
-                style={{ ...inputStyle, resize: "vertical" }}
-              />
-            </div>
-            <div style={formGroupStyle}>
-              <label htmlFor="gambar_hewan" style={labelStyle}>Gambar Hewan (Opsional):</label>
-              <input
-                type="file"
-                id="gambar_hewan"
-                accept="image/*"
-                onChange={handleFileChange}
-                style={{ ...inputStyle, border: "1px solid #ddd", padding: "10px" }}
-              />
-              {preview_gambar && (
-                <div style={previewContainerStyle}>
-                  <p style={previewTextStyle}>Preview Gambar:</p>
-                  <img src={preview_gambar} alt="Preview" style={previewImageStyle} />
-                </div>
-              )}
-              {!preview_gambar && !gambar_hewan && (
-                 <p style={optionalTextStyle}>Tidak ada gambar dipilih. Gambar lama akan dipertahankan jika tidak ada gambar baru diunggah.</p>
-              )}
-            </div>
-            <button
-              type="submit"
-              disabled={submitting}
-              style={submitButtonStyle(submitting)}
-            >
-              {submitting ? "Memperbarui..." : "Perbarui Data Hewan"}
-            </button>
-            {error && <div style={errorTextStyle}>{error}</div>}
-          </form>
+    <div className="bg-white min-vh-100 py-5">
+      <Container style={{ maxWidth: "900px" }}>
+        <div className="mb-4 d-flex justify-content-between align-items-center">
+          <h2 className="text-success fw-bold">Edit Hewan</h2>
+          <Button variant="outline-success" onClick={() => navigate("/admin/kelola-hewan")}>
+            ← Kembali
+          </Button>
         </div>
-      </main>
+
+        <Form onSubmit={handleSubmit}>
+
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="nama_hewan" className="text-success fw-semibold">Nama Hewan:</Form.Label>
+            <Form.Control
+              type="text"
+              id="nama_hewan"
+              value={nama_hewan}
+              onChange={(e) => setNamaHewan(e.target.value)}
+              required
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="kategori_hewan" className="text-success fw-semibold">Kategori Hewan:</Form.Label>
+            <Form.Control
+              type="text"
+              id="kategori_hewan"
+              value={kategori_hewan}
+              onChange={(e) => setKategoriHewan(e.target.value)}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="deskripsi_hewan" className="text-success fw-soldemib">Deskripsi Hewan:</Form.Label>
+            <Form.Control
+              as={"textarea"}
+              type="text"
+              id="deskripsi_hewan"
+              value={deskripsi_hewan}
+              onChange={(e) => setDeskripsiHewan(e.target.value)}
+              rows="5"
+              required
+              style={{ ...inputStyle, resize: "vertical" }}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="gambar_hewan" className="text-success fw-soldemib">Gambar Hewan (Opsional):</Form.Label>
+            <input
+              type="file"
+              id="gambar_hewan"
+              accept="image/*"
+              onChange={handleFileChange}
+              style={{ ...inputStyle, border: "1px solid #ddd", padding: "10px" }}
+            />
+            {preview_gambar && (
+              <div style={previewContainerStyle}>
+                <p style={previewTextStyle}>Preview Gambar:</p>
+                <img src={preview_gambar} alt="Preview" style={previewImageStyle} />
+              </div>
+            )}
+            {!preview_gambar && !gambar_hewan && (
+              <p style={optionalTextStyle}>Tidak ada gambar dipilih. Gambar lama akan dipertahankan jika tidak ada gambar baru diunggah.</p>
+            )}
+          </Form.Group>
+          <button
+            type="submit"
+            disabled={submitting}
+            style={submitButtonStyle(submitting)}
+          >
+            {submitting ? "Memperbarui..." : "Perbarui Data Hewan"}
+          </button>
+          {error && <div style={errorTextStyle}>{error}</div>}
+        </Form>
+      </Container>
     </div>
   );
 }

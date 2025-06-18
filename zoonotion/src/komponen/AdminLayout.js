@@ -1,42 +1,57 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import StaticNavbar from "./StaticNavbar";
 import Footer from "./Footer";
 
 function AdminLayout({ children }) {
   return (
-    <div className="vh-100 d-flex flex-column">
+    <div className="d-flex flex-column vh-100 overflow-hidden">
       <StaticNavbar />
 
-      <div className="d-flex flex-grow-1">
-        <aside className="bg-light p-3" style={{ width: '200px' }}>
-          <h4>Admin Panel</h4>
-          <ul className="nav flex-column">
-            <li className="nav-item">
-              <Link to="/admin/dashboard" className="nav-link">Dashboard</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/admin/manajemen-event" className="nav-link">Manajemen Event</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/admin/kelolaZoo" className="nav-link">Manajemen Zoo</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/admin/kelola-hewan" className="nav-link">Kelola Hewan</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/admin/kelola-artikel" className="nav-link">Kelola Artikel</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/admin/informasi" className="nav-link">Informasi</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/login" className="nav-link">LOGOUT</Link>
-            </li>
+      <div className="d-flex flex-grow-1" style={{ overflow: 'hidden' }}>
+        {/* Sidebar */}
+        <aside
+          className="bg-white shadow-sm border-end"
+          style={{
+            width: '240px',
+            padding: '24px 16px',
+            position: 'relative',
+            zIndex: 10,
+          }}
+        >
+          <h5 className="fw-bold text-success mb-4 px-2">Admin Panel</h5>
+          <ul className="nav flex-column gap-2">
+            {[
+              { to: "/admin/dashboard", label: "Dashboard" },
+              { to: "/admin/manajemen-event", label: "Manajemen Event" },
+              { to: "/admin/kelolaZoo", label: "Manajemen Zoo" },
+              { to: "/admin/kelola-hewan", label: "Kelola Hewan" },
+              { to: "/admin/kelola-artikel", label: "Kelola Artikel" },
+              { to: "/admin/informasi", label: "Informasi" },
+              { to: "/login", label: "LOGOUT" },
+            ].map((item, index) => (
+              <li className="nav-item" key={index}>
+                <NavLink
+                  to={item.to}
+                  className={({ isActive }) =>
+                    `nav-link px-3 py-2 rounded text-dark fw-medium transition-all ${
+                      isActive ? 'bg-success text-white' : 'hover-bg'
+                    }`
+                  }
+                  style={{ transition: 'all 0.2s ease' }}
+                >
+                  {item.label}
+                </NavLink>
+              </li>
+            ))}
           </ul>
         </aside>
-        <main className="flex-grow-1 p-3">{children}</main>
+
+        {/* Main Content */}
+        <main className="flex-grow-1 overflow-auto p-4 bg-light">
+          {children}
+        </main>
       </div>
 
       <Footer />

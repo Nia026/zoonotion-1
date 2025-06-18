@@ -44,84 +44,106 @@ function KelolaZoo() {
   };
 
   return (
-    <div className="d-flex" style={{ minHeight: "100vh", background: "#F4F6F8" }}>
-
-      <Container fluid className="py-5 flex-grow-1">
-        <div className="d-flex justify-content-between align-items-center mb-4 px-3">
-          <h1 className="h3 fw-bold text-dark">Kelola Kebun Binatang</h1>
-          <Button variant="success" onClick={() => navigate("/admin/manajemen-zoo")}>
-            + Tambah Kebun Binatang
-          </Button>
+    <div style={{minHeight: "100vh", padding: "40px 5vw" }}>
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
+        <h1 className="mb-5 zoo-main-title">
+          Kelola Kebun Binatang 
+        </h1> 
+        <button
+          onClick={() => navigate("/admin/manajemen-zoo")}
+          style={{
+            background: "#33693C",
+            color: "#fff",
+            border: "none",
+            borderRadius: 8,
+            padding: "10px 28px",
+            fontWeight: 600,
+            fontSize: 16,
+            cursor: "pointer",
+            boxShadow: "0 2px 8px rgba(51,105,60,0.1)"
+          }}
+        >
+          + Tambah Kebun Binatang
+        </button>
+      </div>
+  
+      {/* Content */}
+      {loading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+          <Spinner animation="border" role="status" variant="success">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+          <p className="ms-2 text-success">Memuat data kebun binatang...</p>
         </div>
-
-        {loading ? (
-          <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "200px" }}>
-            <Spinner animation="border" role="status" variant="success">
-              <span className="visually-hidden">Loading...</span>
-            </Spinner>
-            <p className="ms-2 text-success">Memuat data kebun binatang...</p>
-          </div>
-        ) : error ? (
-          <Alert variant="danger" className="mx-3">{error}</Alert>
-        ) : zoos.length === 0 ? (
-          <Alert variant="info" className="text-center mx-3">Belum ada data kebun binatang.</Alert>
-        ) : (
-          <Row xs={1} md={2} lg={3} className="g-4 px-3">
-            {zoos.map((zoo) => (
-              <Col key={zoo.id}>
-                <Card className="h-100 shadow-sm border-0 rounded-3">
-                  {zoo.gambar_zoo && (
-                    <Card.Img
-                      variant="top"
-                      src={`${API_BASE_URL}${zoo.gambar_zoo}`}
-                      alt={zoo.nama_kebun_binatang}
-                      style={{ height: "200px", objectFit: "cover", borderTopLeftRadius: "0.75rem", borderTopRightRadius: "0.75rem" }}
-                    />
-                  )}
-                  <Card.Body className="d-flex flex-column">
-                    <Card.Title className="fw-bold text-success">{zoo.nama_kebun_binatang}</Card.Title>
-                    <Card.Text className="text-muted small mb-2">
-                      {zoo.deskripsi_kebun_binatang ? zoo.deskripsi_kebun_binatang.substring(0, 150) + "..." : "Tidak ada deskripsi."}
-                    </Card.Text>
-                    {zoo.link_web_resmi && (
-                        <Card.Text className="small mb-1">
-                            <a href={zoo.link_web_resmi} target="_blank" rel="noopener noreferrer" className="text-decoration-none text-info">
-                                <i className="bi bi-globe me-1"></i>Web Resmi
-                            </a>
-                        </Card.Text>
-                    )}
-                     {zoo.link_tiket && (
-                        <Card.Text className="small mb-3">
-                            <a href={zoo.link_tiket} target="_blank" rel="noopener noreferrer" className="text-decoration-none text-info">
-                                <i className="bi bi-ticket-perforated me-1"></i>Beli Tiket
-                            </a>
-                        </Card.Text>
-                    )}
-                    <div className="mt-auto d-flex gap-2">
-                      <Button
-                        variant="primary" // Warna biru untuk edit
-                        className="flex-grow-1"
-                        onClick={() => navigate(`/edit-zoo/${zoo.id}`)}
-                      >
-                        Kelola
-                      </Button>
-                      <Button
-                        variant="danger" // Warna merah untuk delete
-                        className="flex-grow-1"
-                        onClick={() => handleDeleteZoo(zoo.id)}
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        )}
-      </Container>
+      ) : error ? (
+        <div className="alert alert-danger">{error}</div>
+      ) : zoos.length === 0 ? (
+        <div className="alert alert-info text-center">Belum ada data kebun binatang.</div>
+      ) : (
+        <div className="d-flex flex-column gap-4">
+          {zoos.map((zoo) => (
+            <div
+              key={zoo.id}
+              className="d-flex gap-3 p-3 bg-white rounded shadow-sm border"
+              style={{ alignItems: "start" }}
+            >
+              {zoo.gambar_zoo && (
+                <img
+                  src={`${API_BASE_URL}${zoo.gambar_zoo}`}
+                  alt={zoo.nama_kebun_binatang}
+                  style={{
+                    width: 150,
+                    height: 120,
+                    objectFit: "cover",
+                    borderRadius: 8
+                  }}
+                />
+              )}
+              <div className="flex-grow-1">
+                <h5 className="mb-1 fw-bold text-success">{zoo.nama_kebun_binatang}</h5>
+                <p className="mb-1 text-muted" style={{ fontSize: 14 }}>
+                  {zoo.deskripsi_kebun_binatang
+                    ? zoo.deskripsi_kebun_binatang.substring(0, 150) + "..."
+                    : "Tidak ada deskripsi."}
+                </p>
+  
+                {zoo.link_web_resmi && (
+                  <p className="mb-1 small">
+                    <a href={zoo.link_web_resmi} target="_blank" rel="noopener noreferrer" className="text-decoration-none text-info">
+                      <i className="bi bi-globe me-1"></i>Web Resmi
+                    </a>
+                  </p>
+                )}
+                {zoo.link_tiket && (
+                  <p className="mb-2 small">
+                    <a href={zoo.link_tiket} target="_blank" rel="noopener noreferrer" className="text-decoration-none text-info">
+                      <i className="bi bi-ticket-perforated me-1"></i>Beli Tiket
+                    </a>
+                  </p>
+                )}
+  
+                <div className="d-flex gap-2 mt-2">
+                  <button
+                    onClick={() => navigate(`/edit-zoo/${zoo.id}`)}
+                    className="btn btn-success btn-sm px-3"
+                  >
+                    Kelola
+                  </button>
+                  <button
+                    onClick={() => handleDeleteZoo(zoo.id)}
+                    className="btn btn-danger btn-sm px-3"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
-  );
+  );  
 }
 
 export default KelolaZoo;

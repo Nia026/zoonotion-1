@@ -46,13 +46,10 @@ export default function KelolaArtikel() {
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#F4F6F8" }}>
-      {/* Jika Anda memiliki komponen Sidebar, pastikan di sini */}
-      {/* <Sidebar /> */}
-
+    <div style={{ display: "flex", minHeight: "100vh"}}>
       <main style={{ flex: 1, padding: "40px 5vw" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32 }}>
-          <h1 style={{ fontSize: 28, fontWeight: 700, color: "#222" }}>Kelola Artikel</h1>
+          <h1 className="mb-5 zoo-main-title">Manajemen Artikel</h1>
           <button
             onClick={() => navigate("/tambah-artikel")}
             style={{
@@ -64,17 +61,16 @@ export default function KelolaArtikel() {
               fontWeight: 600,
               fontSize: 16,
               cursor: "pointer",
-              boxShadow: "0 2px 8px rgba(51,105,60,0.08)"
+              boxShadow: "0 2px 8px rgba(51,105,60,0.1)"
             }}
           >
             + Tambah Artikel
           </button>
         </div>
 
-        {/* Tambahkan kondisi loading dan error */}
         {loading ? (
           <div style={{ textAlign: "center", padding: "50px 0", color: "#33693C" }}>
-            Loading artikel... {/* Anda bisa menambahkan spinner di sini */}
+            Loading artikel...
           </div>
         ) : error ? (
           <div style={{ color: "red", textAlign: "center", padding: "20px" }}>
@@ -83,7 +79,7 @@ export default function KelolaArtikel() {
         ) : articles.length === 0 ? (
           <div style={{ color: "#888", fontSize: 18, textAlign: "center", padding: "50px 0" }}>Belum ada artikel.</div>
         ) : (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 32 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             {articles.map((artikel) => (
               <div
                 key={artikel.id}
@@ -91,66 +87,61 @@ export default function KelolaArtikel() {
                   background: "#fff",
                   borderRadius: 12,
                   boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
-                  width: 340, // Lebar card tetap 340px
                   display: "flex",
-                  flexDirection: "column",
-                  overflow: "hidden",
+                  padding: 16,
+                  gap: 20,
+                  alignItems: "flex-start",
                   border: "1px solid #e5e7eb"
                 }}
               >
+                {/* Gambar Artikel */}
                 {artikel.gambar_artikel && (
                   <img
                     src={`${API_BASE_URL}${artikel.gambar_artikel}`}
                     alt={artikel.judul_artikel}
                     style={{
-                      width: "100%",
-                      height: 180,
+                      width: 100,
+                      height: 100,
                       objectFit: "cover",
-                      borderTopLeftRadius: 12,
-                      borderTopRightRadius: 12,
+                      borderRadius: 8
                     }}
                   />
                 )}
-                <div style={{ padding: 20, flex: 1, display: "flex", flexDirection: "column" }}>
-                  <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 8 }}>{artikel.judul_artikel}</h3>
-                  <p style={{ fontSize: 14, color: "#444", marginBottom: 8, flex: 1, minHeight: 40 }}>
-                    {artikel.isi_artikel ? artikel.isi_artikel.substring(0, 100) + "..." : "-"}
+
+                {/* Konten Artikel */}
+                <div style={{ flex: 1 }}>
+                  <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>{artikel.judul_artikel}</h3>
+                  <p style={{ fontSize: 14, color: "#444", marginBottom: 8 }}>
+                    {artikel.isi_artikel ? artikel.isi_artikel.substring(0, 140) + "..." : "-"}
                   </p>
-                  <div style={{ fontSize: 13, color: "#888", marginBottom: 12 }}>
-                    Author: {artikel.nama_author}
-                  </div>
-                  <div style={{ display: "flex", gap: 10, marginTop: "auto" }}> {/* Container untuk tombol */}
-                    {/* --- MODIFIED: Tombol Kelola (Edit) --- */}
+                  <div style={{ display: "flex", justifyContent: "flex-start", gap: 12 }}>
                     <button
+                      onClick={() => navigate(`/edit-artikel/${artikel.id}`)}
                       style={{
-                        background: "#007bff", // Warna biru untuk edit
+                        background: "#1E824C",
                         color: "#fff",
                         border: "none",
                         borderRadius: 6,
-                        padding: "8px 0",
+                        padding: "8px 20px",
                         fontWeight: 500,
-                        fontSize: 15,
-                        cursor: "pointer",
-                        flex: 1 // Agar tombol mengisi ruang yang tersedia
+                        fontSize: 14,
+                        cursor: "pointer"
                       }}
-                      onClick={() => navigate(`/edit-artikel/${artikel.id}`)}
                     >
                       Kelola
                     </button>
-                    {/* --- NEW: Tombol Delete --- */}
                     <button
+                      onClick={() => handleDeleteArticle(artikel.id)}
                       style={{
-                        background: "#dc3545", // Warna merah untuk delete
+                        background: "#D63031",
                         color: "#fff",
                         border: "none",
                         borderRadius: 6,
-                        padding: "8px 0",
+                        padding: "8px 20px",
                         fontWeight: 500,
-                        fontSize: 15,
-                        cursor: "pointer",
-                        flex: 1
+                        fontSize: 14,
+                        cursor: "pointer"
                       }}
-                      onClick={() => handleDeleteArticle(artikel.id)}
                     >
                       Delete
                     </button>
@@ -161,6 +152,7 @@ export default function KelolaArtikel() {
           </div>
         )}
       </main>
+
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Container, Form, Button } from "react-bootstrap";
 
 export default function TambahArtikel() {
   const [judul, setJudul] = useState("");
@@ -63,95 +64,65 @@ export default function TambahArtikel() {
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#F4F6F8" }}>
-      <main style={{ flex: 1, padding: "40px 5vw" }}>
-        <h1 style={{ fontSize: 28, fontWeight: 700, color: "#222", marginBottom: 32 }}>
-          Tambah Artikel
-        </h1>
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            background: "#fff",
-            borderRadius: 12,
-            boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
-            padding: 32,
-            maxWidth: 520,
-            margin: "0 auto"
-          }}
-        >
-          <div style={{ marginBottom: 18 }}>
-            <label style={{ fontWeight: 600 }}>Judul Artikel</label>
-            <input
+    <div className="bg-white min-vh-100 py-5">
+      <Container style={{ maxWidth: "900px" }}>
+        <div className="mb-4 d-flex justify-content-between align-items-center">
+          <h2 className="text-success fw-bold">Tambah Artikel</h2>
+          <Button variant="outline-success" onClick={() => navigate("/admin/kelola-artikel")}>
+            ← Kembali
+          </Button>
+        </div>
+
+        <Form onSubmit={handleSubmit} encType="multipart/form-data">
+          <Form.Group className="mb-3">
+            <Form.Label className="text-success fw-semibold">Judul Artikel</Form.Label>
+            <Form.Control
               type="text"
               value={judul}
               onChange={e => setJudul(e.target.value)}
               required
-              style={{
-                width: "100%",
-                padding: 10,
-                borderRadius: 6,
-                border: "1px solid #ccc",
-                marginTop: 6
-              }}
+              placeholder="Masukkan judul artikel"
             />
-          </div>
-          <div style={{ marginBottom: 18 }}>
-            <label style={{ fontWeight: 600 }}>Isi Artikel</label>
-            <textarea
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label className="text-success fw-semibold">Isi Artikel</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={6}
               value={isi}
               onChange={e => setIsi(e.target.value)}
               required
-              rows={6}
-              style={{
-                width: "100%",
-                padding: 10,
-                borderRadius: 6,
-                border: "1px solid #ccc",
-                marginTop: 6,
-                resize: "vertical"
-              }}
+              placeholder="Masukkan isi artikel"
             />
-          </div>
-          <div style={{ marginBottom: 18 }}>
-            <label style={{ fontWeight: 600 }}>Nama Author</label>
-            <input
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label className="text-success fw-semibold">Nama Author</Form.Label>
+            <Form.Control
               type="text"
               value={author}
               onChange={e => setAuthor(e.target.value)}
               required
-              style={{
-                width: "100%",
-                padding: 10,
-                borderRadius: 6,
-                border: "1px solid #ccc",
-                marginTop: 6
-              }}
+              placeholder="Masukkan nama author"
             />
-          </div>
-          {/* Bagian Input Gambar yang Diubah */}
-          <div style={{ marginBottom: 24 }}>
-            <label style={{ fontWeight: 600, display: 'block', marginBottom: '6px' }}>Gambar Artikel</label>
-            <input
-              type="file" // Ubah type menjadi "file"
-              accept="image/*" // Hanya izinkan file gambar
-              onChange={handleGambarChange} // Gunakan handler baru
-              style={{
-                width: "100%",
-                padding: '10px 0', // Sesuaikan padding karena type file
-                borderRadius: 6,
-                border: "1px solid #ccc", // Input type file tidak selalu mendukung border di semua browser
-                marginTop: 6,
-                boxSizing: 'border-box' // Penting untuk padding dan border
-              }}
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label className="text-success fw-semibold">Gambar Artikel</Form.Label>
+            <Form.Control
+              type="file"
+              accept="image/*"
+              onChange={handleGambarChange}
             />
             {gambarPreview && (
-              <div style={{ marginTop: 15, textAlign: 'center' }}>
+              <div className="mt-3 text-center">
                 <img
                   src={gambarPreview}
                   alt="Pratinjau Gambar Artikel"
                   style={{
-                    maxWidth: '200px', // Batasi lebar pratinjau
-                    maxHeight: '120px', // Batasi tinggi pratinjau
+                    maxWidth: '200px',
+                    maxHeight: '120px',
                     objectFit: 'cover',
                     borderRadius: 8,
                     border: '1px solid #ddd'
@@ -159,36 +130,31 @@ export default function TambahArtikel() {
                 />
               </div>
             )}
-          </div>
-          {/* End Bagian Input Gambar yang Diubah */}
-          <button
+          </Form.Group>
+
+          <Button
             type="submit"
+            variant="success"
+            className="w-100 fw-semibold"
             disabled={loading}
-            style={{
-              background: "#33693C",
-              color: "#fff",
-              border: "none",
-              borderRadius: 8,
-              padding: "12px 0",
-              fontWeight: 600,
-              fontSize: 16,
-              width: "100%",
-              cursor: loading ? "not-allowed" : "pointer"
-            }}
           >
             {loading ? "Menyimpan..." : "Tambah Artikel"}
-          </button>
+          </Button>
+
           {pesan && (
-            <div style={{
-              marginTop: 18,
-              color: pesan.includes("berhasil") ? "#33693C" : "#c00",
-              textAlign: "center" // Agar pesan di tengah
-            }}>
+            <div
+              style={{
+                marginTop: 18,
+                color: pesan.includes("berhasil") ? "#33693C" : "#c00",
+                textAlign: "center"
+              }}
+            >
               {pesan}
             </div>
           )}
-        </form>
-      </main>
+        </Form>
+      </Container>
     </div>
   );
 }
+

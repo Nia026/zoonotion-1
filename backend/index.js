@@ -479,7 +479,6 @@ app.delete('/api/galleries/:galleryId', async (req, res) => {
       where: { id: galleryId },
     });
 
-    // Hapus file gambar dari server
     if (existingGallery.gambar_galeri && existingGallery.gambar_galeri.startsWith('/uploads/')) {
       const imagePath = path.join(__dirname, existingGallery.gambar_galeri);
       fs.unlink(imagePath, (err) => {

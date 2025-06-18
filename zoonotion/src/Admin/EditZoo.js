@@ -110,19 +110,18 @@ export default function EditZoo() {
   }
 
   return (
-    <div className="d-flex" style={{ minHeight: "100vh", background: "#F4F6F8" }}>
-      {/* <Sidebar /> */}
-      <Container fluid className="py-5 flex-grow-1">
-        <div className="bg-white shadow p-4 p-md-5 rounded-3 border mx-auto" style={{ maxWidth: "800px" }}>
-          <h1 className="text-center mb-4 text-success fw-bold">
-            <span className="border-bottom border-success border-4 pb-1">
-              Edit Data Kebun Binatang
-            </span>
-          </h1>
+    <div className="bg-white min-vh-100 py-5">
+      <Container style={{ maxWidth: "900px" }}>
+          <div className="mb-4 d-flex justify-content-between align-items-center">
+            <h2 className="text-success fw-bold">Edit Kebun Binatang</h2>
+            <Button variant="outline-success" onClick={() => navigate("/admin/kelolaZoo")}>
+              ← Kembali
+            </Button>
+          </div>
 
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Label className="text-success fw-semibold">Nama Kebun Binatang <span className="text-danger">*</span></Form.Label>
+              <Form.Label className="text-success fw-semibold">Nama Kebun Binatang</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Masukkan nama kebun binatang"
@@ -210,7 +209,6 @@ export default function EditZoo() {
             </Button>
             {error && <Alert variant="danger" className="mt-3 text-center">{error}</Alert>}
           </Form>
-        </div>
       </Container>
     </div>
   );

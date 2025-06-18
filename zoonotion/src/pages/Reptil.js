@@ -8,7 +8,7 @@ import './EducationAves.css';
 const API_BASE_URL = "http://localhost:5000";
 
 // --- DATA PENJELASAN REPTIL UMUM (HARDCODED) ---
-const REPTIL_GENERAL_EXPLANATION_DATA = {
+const AVES_GENERAL_EXPLANATION_DATA = {
   id: 'reptil-general-static', // ID unik
   nama_hewan: "Reptil",
   gambar_hewan: "/assets/gambarReptil.jpg",
@@ -26,50 +26,39 @@ const REPTIL_GENERAL_EXPLANATION_DATA = {
 // --- AKHIR DATA PENJELASAN REPTIL UMUM ---
 
 function Reptil() {
-  const [educations, setEducations] = useState([]); // Hanya akan menyimpan data hewan Reptil spesifik dari API
+  const [educations, setEducations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [showReptilModal, setShowReptilModal] = useState(false); // Untuk modal penjelasan umum Reptil
+  const [showAvesModal, setShowAvesModal] = useState(false);
   const [showAnimalModal, setShowAnimalModal] = useState(false);
   const [currentAnimalDetail, setCurrentAnimalDetail] = useState(null);
 
   useEffect(() => {
-    fetchReptilAnimals(); // Hanya ambil data hewan Reptil spesifik
+    fetchAvesData();
   }, []);
 
-  const fetchReptilAnimals = async () => {
+  const fetchAvesData = async () => {
     try {
-      setLoading(true);
       const response = await axios.get(`${API_BASE_URL}/api/educations`);
-      // Filter hanya untuk kategori Reptil DAN BUKAN entri penjelasan umum (jika ada di API)
-      const reptilAnimalsData = response.data.filter(item =>
+      const filteredData = response.data.filter(item =>
         item.kategori_hewan === 'Reptil' &&
-        !(item.nama_hewan && item.nama_hewan.toLowerCase().includes('reptil')) // Filter keluar jika ada di backend
+        !(item.nama_hewan && item.nama_hewan.toLowerCase().includes('Reptil'))
       );
-      setEducations(reptilAnimalsData);
-      setLoading(false);
+      setEducations(filteredData);
     } catch (err) {
-      console.error("Error fetching educations:", err);
       setError("Gagal memuat data hewan Reptil. Silakan coba lagi.");
+    } finally {
       setLoading(false);
     }
   };
 
-  // handleShowReptilModal sekarang akan langsung menggunakan data hardcoded
-  const handleShowReptilModal = () => {
-    setShowReptilModal(true);
-  };
-
-  const handleCloseReptilModal = () => {
-    setShowReptilModal(false);
-  };
-
-  const handleShowAnimalModal = (animalData) => {
-    setCurrentAnimalDetail(animalData);
+  const handleShowAvesModal = () => setShowAvesModal(true);
+  const handleCloseAvesModal = () => setShowAvesModal(false);
+  const handleShowAnimalModal = (animal) => {
+    setCurrentAnimalDetail(animal);
     setShowAnimalModal(true);
   };
-
   const handleCloseAnimalModal = () => {
     setShowAnimalModal(false);
     setCurrentAnimalDetail(null);
@@ -78,9 +67,7 @@ function Reptil() {
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
+        <Spinner animation="border" />
       </div>
     );
   }
@@ -94,22 +81,34 @@ function Reptil() {
   }
 
   return (
-    <div className="education-reptil-page education-category-page">
+    <div className="education-category-page">
       <div className="main-header">
-        <div className="category-header-bg" style={{ backgroundImage: `url(${REPTIL_GENERAL_EXPLANATION_DATA.gambar_hewan})` }} onClick={handleShowReptilModal}>
-          <h1 className="fw-bold">REPTIL</h1>
+        <div
+          className="category-header-bg"
+          style={{ backgroundImage: `url(${AVES_GENERAL_EXPLANATION_DATA.gambar_hewan})` }}
+          onClick={handleShowAvesModal}
+        >
+          <h1 className="text-center mb-5 zoo-main-title text-white">REPTIL</h1>
         </div>
       </div>
-
+  
       <Container className="py-4">
         <Row className="g-3">
           {educations.length > 0 ? (
             educations.map(animal => (
               <Col key={animal.id} xs={12} sm={6} md={4} lg={3}>
                 <Card className="animal-card-simple" onClick={() => handleShowAnimalModal(animal)}>
-                  <Card.Img variant="top" src={animal.gambar_hewan ? `${API_BASE_URL}${animal.gambar_hewan}` : `${process.env.PUBLIC_URL}/placeholder-animal.png`} alt={animal.nama_hewan} className="animal-img" />
+                  <Card.Img
+                    variant="top"
+                    src={
+                      animal.gambar_hewan
+                        ? `${API_BASE_URL}${animal.gambar_hewan}`
+                        : `${process.env.PUBLIC_URL}/placeholder-animal.png`
+                    }
+                    alt={animal.nama_hewan}
+                  />
                   <Card.Body className="text-center">
-                    <Card.Title className="animal-name">{animal.nama_hewan}</Card.Title>
+                    <Card.Title>{animal.nama_hewan}</Card.Title>
                   </Card.Body>
                 </Card>
               </Col>
@@ -121,42 +120,55 @@ function Reptil() {
           )}
         </Row>
       </Container>
-
-      {/* Modal Reptil (penjelasan umum) */}
-      <Modal show={showReptilModal} onHide={handleCloseReptilModal} centered>
+  
+      {/* Modal Umum Aves */}
+      <Modal show={showAvesModal} onHide={handleCloseAvesModal} centered>
         <Modal.Header closeButton>
-          <Modal.Title>{REPTIL_GENERAL_EXPLANATION_DATA.nama_hewan}</Modal.Title>
+          <Modal.Title>{AVES_GENERAL_EXPLANATION_DATA.nama_hewan}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>{REPTIL_GENERAL_EXPLANATION_DATA.penjelasan_umum}</p>
-          <ul className="modal-feature-list">
-            {REPTIL_GENERAL_EXPLANATION_DATA.ciri_ciri.map((ciri, index) => (
+          <p>{AVES_GENERAL_EXPLANATION_DATA.penjelasan_umum}</p>
+          <ul>
+            {AVES_GENERAL_EXPLANATION_DATA.ciri_ciri.map((ciri, index) => (
               <li key={index}>{ciri}</li>
             ))}
           </ul>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseReptilModal}>Tutup</Button>
+          <Button variant="secondary" onClick={handleCloseAvesModal}>
+            Tutup
+          </Button>
         </Modal.Footer>
       </Modal>
-
-      {/* Modal detail hewan */}
+  
+      {/* Modal Detail Hewan */}
       <Modal show={showAnimalModal} onHide={handleCloseAnimalModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>{currentAnimalDetail?.nama_hewan}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {currentAnimalDetail && (
-            <img src={currentAnimalDetail.gambar_hewan ? `${API_BASE_URL}${currentAnimalDetail.gambar_hewan}` : `${process.env.PUBLIC_URL}/placeholder-animal.png`} alt={currentAnimalDetail.nama_hewan} className="img-fluid modal-animal-img mb-3" />
+            <img
+              src={
+                currentAnimalDetail.gambar_hewan
+                  ? `${API_BASE_URL}${currentAnimalDetail.gambar_hewan}`
+                  : `${process.env.PUBLIC_URL}/placeholder-animal.png`
+              }
+              alt={currentAnimalDetail.nama_hewan}
+              className="img-fluid mb-3"
+            />
           )}
           <p>{currentAnimalDetail?.deskripsi_hewan}</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseAnimalModal}>Tutup</Button>
+          <Button variant="secondary" onClick={handleCloseAnimalModal}>
+            Tutup
+          </Button>
         </Modal.Footer>
       </Modal>
     </div>
   );
+  
 }
 
 export default Reptil;

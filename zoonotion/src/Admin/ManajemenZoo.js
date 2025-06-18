@@ -81,105 +81,103 @@ function ManajemenZoo() {
   };
 
   return (
-    <div className="bg-light min-vh-100 py-5"> {/* Background abu-abu muda Bootstrap */}
-      <Container className="mb-5">
-        <div className="bg-white shadow p-4 p-md-5 rounded-3 border">
-          <h1 className="text-center mb-4 text-success fw-bold">
-            <span className="border-bottom border-success border-4 pb-1">
-              Tambah Kebun Binatang Baru
-            </span>
-          </h1>
-
-          {/* Notifikasi */}
-          {successMessage && <Alert variant="success">{successMessage}</Alert>}
-          {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
-              <Form.Label className="text-success fw-semibold">Nama Kebun Binatang <span className="text-danger">*</span></Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Masukkan nama kebun binatang"
-                value={namaKebunBinatang}
-                onChange={(e) => setNamaKebunBinatang(e.target.value)}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label className="text-success fw-semibold">Deskripsi Kebun Binatang</Form.Label>
-              <Form.Control
-                as="textarea"
-                placeholder="Deskripsikan kebun binatang ini"
-                value={deskripsiKebunBinatang}
-                onChange={(e) => setDeskripsiKebunBinatang(e.target.value)}
-                rows={4}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label className="text-success fw-semibold">Link Web Resmi</Form.Label>
-              <Form.Control
-                type="url" // Ganti ke "url" untuk validasi browser
-                placeholder="https://www.kebunbinatang.com"
-                value={linkWebResmi}
-                onChange={(e) => setLinkWebResmi(e.target.value)}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label className="text-success fw-semibold">Link Pembelian Tiket</Form.Label>
-              <Form.Control
-                type="url" // Ganti ke "url"
-                placeholder="https://tiket.kebunbinatang.com"
-                value={linkTiket}
-                onChange={(e) => setLinkTiket(e.target.value)}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-4">
-              <Form.Label className="text-success fw-semibold">Gambar Kebun Binatang</Form.Label>
-              <Form.Control
-                type="file"
-                accept="image/*" // Hanya izinkan file gambar
-                onChange={handleGambarZooChange}
-              />
-              {gambarZooPreview && (
-                <div className="mt-3 text-center">
-                  <img
-                    src={gambarZooPreview}
-                    alt="Preview Gambar Kebun Binatang"
-                    className="img-thumbnail"
-                    style={{ maxWidth: '250px', maxHeight: '150px', objectFit: 'cover' }}
-                  />
-                </div>
-              )}
-            </Form.Group>
-
-            <Button
-              variant="success" // Tombol hijau
-              type="submit"
-              className="w-100 py-2 fw-semibold"
-              disabled={loading} // Nonaktifkan tombol saat loading
-            >
-              {loading ? (
-                <>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                    className="me-2"
-                  />
-                  Memproses...
-                </>
-              ) : (
-                "Simpan Kebun Binatang"
-              )}
-            </Button>
-          </Form>
+    <div className="bg-white min-vh-100 py-5">
+      <Container style={{ maxWidth: "900px" }}>
+        <div className="mb-4 d-flex justify-content-between align-items-center">
+          <h2 className="text-success fw-bold">Tambah Kebun Binatang</h2>
+          <Button variant="outline-success" onClick={() => navigate("/admin/kelolaZoo")}>
+            ← Kembali
+          </Button>
         </div>
+
+        {successMessage && <Alert variant="success">{successMessage}</Alert>}
+        {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-3">
+            <Form.Label className="text-success fw-semibold">Nama Kebun Binatang</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Masukkan nama kebun binatang"
+              value={namaKebunBinatang}
+              onChange={(e) => setNamaKebunBinatang(e.target.value)}
+              required
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label className="text-success fw-semibold">Deskripsi Kebun Binatang</Form.Label>
+            <Form.Control
+              as="textarea"
+              placeholder="Deskripsikan kebun binatang ini"
+              value={deskripsiKebunBinatang}
+              onChange={(e) => setDeskripsiKebunBinatang(e.target.value)}
+              rows={4}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label className="text-success fw-semibold">Link Web Resmi</Form.Label>
+            <Form.Control
+              type="url" // Ganti ke "url" untuk validasi browser
+              placeholder="https://www.kebunbinatang.com"
+              value={linkWebResmi}
+              onChange={(e) => setLinkWebResmi(e.target.value)}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label className="text-success fw-semibold">Link Pembelian Tiket</Form.Label>
+            <Form.Control
+              type="url" // Ganti ke "url"
+              placeholder="https://tiket.kebunbinatang.com"
+              value={linkTiket}
+              onChange={(e) => setLinkTiket(e.target.value)}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-4">
+            <Form.Label className="text-success fw-semibold">Gambar Kebun Binatang</Form.Label>
+            <Form.Control
+              type="file"
+              accept="image/*" // Hanya izinkan file gambar
+              onChange={handleGambarZooChange}
+            />
+            {gambarZooPreview && (
+              <div className="mt-3 text-center">
+                <img
+                  src={gambarZooPreview}
+                  alt="Preview Gambar Kebun Binatang"
+                  className="img-thumbnail"
+                  style={{ maxWidth: '250px', maxHeight: '150px', objectFit: 'cover' }}
+                />
+              </div>
+              )}
+          </Form.Group>
+
+          <Button
+            variant="success" // Tombol hijau
+            type="submit"
+            className="w-100 py-2 fw-semibold"
+            disabled={loading} // Nonaktifkan tombol saat loading
+          >
+            {loading ? (
+              <>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                  className="me-2"
+                />
+                Memproses...
+               </>
+            ) : (
+              "Simpan Kebun Binatang"
+            )}
+          </Button>
+        </Form>
       </Container>
     </div>
   );

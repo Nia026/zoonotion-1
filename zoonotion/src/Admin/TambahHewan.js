@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Sidebar from "./Sidebar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Container, Button, Form } from "react-bootstrap";
 
 export default function TambahHewan() {
   const [nama, setNama] = useState("");
@@ -31,41 +32,30 @@ export default function TambahHewan() {
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#F4F6F8" }}>
-      <main style={{ flex: 1, padding: "40px 5vw" }}>
-        <h1 style={{ fontSize: 28, fontWeight: 700, color: "#222", marginBottom: 32 }}>
-          Tambah Hewan
-        </h1>
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            background: "#fff",
-            borderRadius: 12,
-            boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
-            padding: 32,
-            maxWidth: 520,
-            margin: "0 auto"
-          }}
-          encType="multipart/form-data"
-        >
-          <div style={{ marginBottom: 18 }}>
-            <label style={{ fontWeight: 600 }}>Nama Hewan</label>
-            <input
+    <div className="bg-white min-vh-100 py-5">
+      <Container style={{ maxWidth: "900px" }}>
+        <div className="mb-4 d-flex justify-content-between align-items-center">
+          <h2 className="text-success fw-bold">Tambah Hewan</h2>
+          <Button variant="outline-success" onClick={() => navigate("/admin/kelola-hewan")}>
+            ← Kembali
+          </Button>
+        </div>
+
+        <Form onSubmit={handleSubmit} encType="multipart/form-data">
+        
+          <Form.Group className="mb-3">
+            <Form.Label className="text-success fw-semibold">Nama Hewan</Form.Label>
+            <Form.Control
               type="text"
               value={nama}
               onChange={e => setNama(e.target.value)}
               required
-              style={{
-                width: "100%",
-                padding: 10,
-                borderRadius: 6,
-                border: "1px solid #ccc",
-                marginTop: 6
-              }}
+              placeholder="Masukkan nama hewan" 
             />
-          </div>
-          <div style={{ marginBottom: 18 }}>
-            <label style={{ fontWeight: 600 }}>Kategori Hewan</label>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label className="text-success fw-semibold">Kategori Hewan</Form.Label>
             <select
               value={kategori}
               onChange={e => setKategori(e.target.value)}
@@ -83,26 +73,23 @@ export default function TambahHewan() {
               <option value="Amfibi">Amfibi</option>
               <option value="Reptil">Reptil</option>
             </select>
-          </div>
-          <div style={{ marginBottom: 18 }}>
-            <label style={{ fontWeight: 600 }}>Deskripsi Hewan</label>
-            <textarea
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label className="text-success fw-semibold">Deskripsi Hewan</Form.Label>
+            <Form.Control
+              type="text"
+              as={"textarea"}
               value={deskripsi}
               onChange={e => setDeskripsi(e.target.value)}
               required
               rows={4}
-              style={{
-                width: "100%",
-                padding: 10,
-                borderRadius: 6,
-                border: "1px solid #ccc",
-                marginTop: 6,
-                resize: "vertical"
-              }}
+              placeholder= "Deskripsikan hewan ini"
             />
-          </div>
-          <div style={{ marginBottom: 24 }}>
-            <label style={{ fontWeight: 600 }}>Gambar Hewan</label>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label className="text-success fw-semibold">Gambar Hewan</Form.Label>
             <input
               type="file"
               accept="image/*"
@@ -115,7 +102,8 @@ export default function TambahHewan() {
                 marginTop: 6
               }}
             />
-          </div>
+          </Form.Group>
+          
           <button
             type="submit"
             style={{
@@ -137,8 +125,8 @@ export default function TambahHewan() {
               {pesan}
             </div>
           )}
-        </form>
-      </main>
+        </Form>
+      </Container>
     </div>
   );
 }

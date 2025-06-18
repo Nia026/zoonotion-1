@@ -154,7 +154,7 @@ function Register() {
       {/* OTP Modal */}
       <Modal show={showOtpModal} onHide={() => setShowOtpModal(false)} centered>
         <Modal.Body className="text-center p-4">
-          <img src="/assets/email_verification.png" alt="Verifikasi Email" height="80" className="mb-3" />
+          <img src="/assets/Logo.png" alt="Zoonotion Logo" height="80" />
           <h5>Verifikasi Email</h5>
           <p className="mb-3">Kode verifikasi dikirim ke <strong>{pendingEmail}</strong></p>
 
@@ -189,7 +189,7 @@ function Register() {
       {/* Success Modal */}
       <Modal show={verificationSuccess} onHide={() => {}} backdrop="static" centered>
         <Modal.Body className="text-center p-4">
-          <img src="/assets/verification_success.png" alt="Berhasil" height="80" className="mb-3" />
+          <img src="/assets/Logo.png" alt="Zoonotion Logo" height="80" />
           <h4 className="mb-2">Selamat!</h4>
           <p>Verifikasi akun berhasil. Welcome to Zoo Notion</p>
         </Modal.Body>

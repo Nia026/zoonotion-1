@@ -87,7 +87,7 @@ function Aves() {
           style={{ backgroundImage: `url(${AVES_GENERAL_EXPLANATION_DATA.gambar_hewan})` }}
           onClick={handleShowAvesModal}
         >
-          <h1 className="fw-bold">AVES</h1>
+          <h1 className="text-center mb-5 zoo-main-title text-white">AVES</h1>
         </div>
       </div>
   
