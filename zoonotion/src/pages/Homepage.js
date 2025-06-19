@@ -24,7 +24,7 @@ function Homepage() {
         <Row className="text-center justify-content-center g-4">
           {[
             { to: '/education', img: 'gambarEdukasi.png', label: 'Education' },
-            { to: '#', img: 'gambarQuizz.png', label: 'Quizz' },
+            { to: 'https://quizizz.com/join/quiz/6430f020001f66001d7bd6ed/start?studentShare=true', img: 'gambarQuizz.png', label: 'Quizz' },
             { to: '/community', img: 'gambarKomunitas.png', label: 'Komunitas' },
             { to: '/article', img: 'gambarArtikel.png', label: 'Artikel' },
           ].map((item, index) => (

@@ -28,7 +28,7 @@ function AdminLayout({ children }) {
               { to: "/admin/kelolaZoo", label: "Manajemen Zoo" },
               { to: "/admin/kelola-hewan", label: "Kelola Hewan" },
               { to: "/admin/kelola-artikel", label: "Kelola Artikel" },
-              { to: "/admin/informasi", label: "Informasi" },
+              // { to: "/admin/informasi", label: "Informasi" },
               { to: "/login", label: "LOGOUT" },
             ].map((item, index) => (
               <li className="nav-item" key={index}>
